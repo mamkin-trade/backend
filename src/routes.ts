@@ -1,20 +1,20 @@
 // Dependencies
-import * as signup from './controllers/signup'
+import * as login from './controllers/login'
 
 export const AppRoutes = [
   {
-    path: '/signup/facebook',
+    path: '/login/facebook',
     method: 'post',
-    action: signup.facebook,
+    action: login.facebook,
   },
   {
-    path: '/signup/vk',
+    path: '/login/vk',
     method: 'post',
-    action: signup.vk,
+    action: login.vk,
   },
   {
-    path: '/signup/twitter',
+    path: '/login/twitter',
     method: 'post',
-    action: signup.twitter,
+    action: login.twitter,
   },
 ]
