@@ -5,11 +5,11 @@
 
 # API documentation
 
-### POST `/login/facebook`
+### [Public] POST `/login/facebook`
 
 Signs up with facebook
 
-#### Body
+#### Request
 
 ```json
 {
@@ -23,4 +23,20 @@ Signs up with facebook
 {
   "accessToken": "123"
 }
+```
+
+### [Public] GET `/users/leaderboard`
+
+Returns best players
+
+#### Response
+
+```json
+[
+  {
+    "name": "Name",
+    "balance": 123,
+  },
+  <...>
+]
 ```

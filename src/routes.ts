@@ -1,5 +1,6 @@
 // Dependencies
 import * as login from './controllers/login'
+import * as users from './controllers/users'
 
 export const AppRoutes = [
   {
@@ -16,5 +17,10 @@ export const AppRoutes = [
     path: '/login/twitter',
     method: 'post',
     action: login.twitter,
+  },
+  {
+    path: '/users/leaderboard',
+    method: 'get',
+    action: users.leaderboard,
   },
 ]
