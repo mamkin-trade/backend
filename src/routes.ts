@@ -9,16 +9,6 @@ export const AppRoutes = [
     action: login.facebook,
   },
   {
-    path: '/login/vk',
-    method: 'post',
-    action: login.vk,
-  },
-  {
-    path: '/login/twitter',
-    method: 'post',
-    action: login.twitter,
-  },
-  {
     path: '/users/leaderboard',
     method: 'get',
     action: users.leaderboard,

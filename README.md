@@ -13,6 +13,7 @@ And you should be good to go! Feel free to fork and submit pull requests. Thanks
 ## Environment variables
 
 - `MONGO`— URL of the mongo database
+- `JWT`— secret for JWT
 
 Also, please, consider looking at `.env.sample`.
 

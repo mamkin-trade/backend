@@ -1,3 +1,6 @@
+// Get environment variables
+import * as dotenv from 'dotenv'
+dotenv.config({ path: `${__dirname}/../.env` })
 // Dependencies
 import 'reflect-metadata'
 import * as Koa from 'koa'

@@ -13,7 +13,7 @@ Signs up with facebook
 
 ```json
 {
-  "token": "123"
+  "accessToken": "123"
 }
 ```
 

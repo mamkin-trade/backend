@@ -1,14 +1,10 @@
 // Dependencies
 import { Context } from 'koa'
+import * as jwt from '../helpers/jwt'
 
 export async function facebook(context: Context) {
-  context.status = 200
-}
-
-export async function vk(context: Context) {
-  context.status = 200
-}
-
-export async function twitter(context: Context) {
-  context.status = 200
+  const accessToken = await jwt.sign({})
+  context.body = {
+    accessToken,
+  }
 }
