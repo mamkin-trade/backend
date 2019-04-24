@@ -1,0 +1,100 @@
+{
+  "_type": "export",
+  "__export_format": 3,
+  "__export_date": "2019-04-24T04:51:27.021Z",
+  "__export_source": "insomnia.desktop.app:v6.3.2",
+  "resources": [
+    {
+      "_id": "wrk_f06cad1819784d3095fe4c545952d6c5",
+      "created": 1556080113793,
+      "description": "",
+      "modified": 1556080113793,
+      "name": "Mamkin Trade",
+      "parentId": null,
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_9ab8e87d2bda4eef9c6b58164916265f",
+      "color": null,
+      "created": 1556080113810,
+      "data": {
+        "base": ""
+      },
+      "isPrivate": false,
+      "metaSortKey": 1556080113810,
+      "modified": 1556080722186,
+      "name": "New Environment",
+      "parentId": "wrk_f06cad1819784d3095fe4c545952d6c5",
+      "_type": "environment"
+    },
+    {
+      "_id": "jar_91b8493a53844fab86ff6b173c52f47c",
+      "cookies": [],
+      "created": 1556080113817,
+      "modified": 1556080113817,
+      "name": "Default Jar",
+      "parentId": "wrk_f06cad1819784d3095fe4c545952d6c5",
+      "_type": "cookie_jar"
+    },
+    {
+      "_id": "req_628b81bf7a1f4292ac6b3d9689e9f8f1",
+      "authentication": {},
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"token\": \"123\"\n}"
+      },
+      "created": 1556080555948,
+      "description": "",
+      "headers": [
+        {
+          "id": "pair_53c74901a9314451895f678a7f37ac15",
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "isPrivate": false,
+      "metaSortKey": -1556080555948,
+      "method": "POST",
+      "modified": 1556081400121,
+      "name": "login/facebook",
+      "parameters": [],
+      "parentId": "wrk_f06cad1819784d3095fe4c545952d6c5",
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingMaxTimelineDataSize": 1000,
+      "settingRebuildPath": true,
+      "settingSendCookies": true,
+      "settingStoreCookies": true,
+      "url": "{{ base  }}/login/facebook",
+      "_type": "request"
+    },
+    {
+      "_id": "env_8fdd6a54d24b4da98340e0af624ad3bf",
+      "color": null,
+      "created": 1556080671036,
+      "data": {
+        "base": "http://188.166.96.198:1338"
+      },
+      "isPrivate": false,
+      "metaSortKey": 1556080671036,
+      "modified": 1556080744948,
+      "name": "Production",
+      "parentId": "env_9ab8e87d2bda4eef9c6b58164916265f",
+      "_type": "environment"
+    },
+    {
+      "_id": "env_9369f573a00c4c428006053d9dee6dfc",
+      "color": null,
+      "created": 1556080682985,
+      "data": {
+        "base": "http://localhost:1338"
+      },
+      "isPrivate": false,
+      "metaSortKey": 1556080682985,
+      "modified": 1556080728076,
+      "name": "Local",
+      "parentId": "env_9ab8e87d2bda4eef9c6b58164916265f",
+      "_type": "environment"
+    }
+  ]
+}
