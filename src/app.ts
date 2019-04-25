@@ -4,15 +4,11 @@ dotenv.config({ path: `${__dirname}/../.env` })
 // Dependencies
 import 'reflect-metadata'
 import * as Koa from 'koa'
-import * as Router from 'koa-router'
-import * as bodyParser from 'koa-bodyparser'
-import { AppRoutes } from './routes'
+import bodyParser from 'koa-bodyparser-ts'
+import { loadControllers } from 'koa-router-ts'
 
 const app = new Koa()
-const router = new Router()
-
-// Register all application routes
-AppRoutes.forEach(route => router[route.method](route.path, route.action))
+const router = loadControllers(`${__dirname}/controllers`, { recurse: true })
 
 // Run app
 app.use(bodyParser())

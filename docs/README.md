@@ -5,38 +5,34 @@
 
 # API documentation
 
-### [Public] POST `/login/facebook`
+## `/login`
 
-Signs up with facebook
+### [Public] POST `/facebook`
 
-#### Request
+Signs up with facebook, returns [User](#user).
 
-```json
-{
-  "accessToken": "123"
-}
-```
+#### Parameters
 
-#### Response
+| field       | type   | description                        |
+| ----------- | ------ | ---------------------------------- |
+| accessToken | string | Access token obatins from Facebook |
 
-```json
-{
-  "accessToken": "123"
-}
-```
+## `/users`
 
-### [Public] GET `/users/leaderboard`
+### [Public] GET `/leaderboard`
 
-Returns best players
+Returns list of [Users](#user) with the highest balances, exluding users without trade history.
 
-#### Response
+### GET `/:id`
 
-```json
-[
-  {
-    "name": "Name",
-    "balance": 123,
-  },
-  <...>
-]
-```
+Returns [User](#user)
+
+# Data models
+
+### User
+
+| field   | type   | description                                                |
+| ------- | ------ | ---------------------------------------------------------- |
+| email   | string | User's email                                               |
+| balance | number | User's balance                                             |
+| token   | number | Access token used to authenticate requests to Mamkin Trade |
