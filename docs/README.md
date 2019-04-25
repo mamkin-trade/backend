@@ -13,9 +13,9 @@ Signs up with facebook, returns [User](#user).
 
 #### Parameters
 
-| field       | type   | description                        |
-| ----------- | ------ | ---------------------------------- |
-| accessToken | string | Access token obatins from Facebook |
+| field       | type   | Required | description                        |
+| ----------- | ------ | -------- | ---------------------------------- |
+| accessToken | string | Yes      | Access token obatins from Facebook |
 
 ## `/users`
 
@@ -27,12 +27,18 @@ Returns list of [Users](#user) with the highest balances, exluding users without
 
 Returns [User](#user)
 
+#### Parameters
+
+| field | type   | Required | description    |
+| ----- | ------ | -------- | -------------- |
+| id    | string | Yes      | ID of the user |
+
 # Data models
 
 ### User
 
-| field   | type   | description                                                |
-| ------- | ------ | ---------------------------------------------------------- |
-| email   | string | User's email                                               |
-| balance | number | User's balance                                             |
-| token   | number | Access token used to authenticate requests to Mamkin Trade |
+| field   | type   | description                                                            |
+| ------- | ------ | ---------------------------------------------------------------------- |
+| email   | string | User's email                                                           |
+| balance | number | User's balance                                                         |
+| token   | number | _Optional._ Access token used to authenticate requests to Mamkin Trade |
