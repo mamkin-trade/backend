@@ -16,16 +16,16 @@ export async function tryReport<T>(fun: (() => T) | Promise<T>) {
 export async function report(err: Error) {
   const dismissableErrors = ['unexpected server response (429)', 'ECONNRESET']
   try {
-    for (const errorText in dismissableErrors) {
-      if (err.message.indexOf(errorText) > -1) {
-        return
-      }
-    }
     let text = `MT Error:\n<code>${err.message || JSON.stringify(err)}</code>`
     if (err.stack) {
       text = `${text}\n\n<code>${err.stack
         .replace('<', '{{')
         .replace('>', '}}')}</code>`
+    }
+    for (const errorText in dismissableErrors) {
+      if (text.indexOf(errorText) > -1) {
+        return
+      }
     }
     bot.telegram.sendMessage(process.env.TELEGRAM_ADMIN, text, {
       parse_mode: 'HTML',
