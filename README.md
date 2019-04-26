@@ -24,7 +24,7 @@ Also, please, consider looking at `.env.sample`.
 
 ## Continuous integration
 
-Any commit pushed to master gets deployed to @temply_bot via [CI Ninja](https://github.com/backmeupplz/ci-ninja).
+Any commit pushed to master gets deployed to [server.mamkin.trade](https://server.mamkin.trade) via [CI Ninja](https://github.com/backmeupplz/ci-ninja).
 
 ## License
 
