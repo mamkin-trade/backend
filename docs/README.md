@@ -43,13 +43,14 @@ Returns list of [Tickers](#ticker) mapped by ticker pair name.
 
 ### User
 
-| field   | type   | description                                                            |
-| ------- | ------ | ---------------------------------------------------------------------- |
-| \_id    | string | Database ID                                                            |
-| email   | string | User's email                                                           |
-| name    | string | User's name                                                            |
-| balance | number | User's balance                                                         |
-| token   | number | _Optional._ Access token used to authenticate requests to Mamkin Trade |
+| field          | type   | description                                                            |
+| -------------- | ------ | ---------------------------------------------------------------------- |
+| \_id           | string | Database ID                                                            |
+| email          | string | User's email                                                           |
+| name           | string | User's name                                                            |
+| balance        | object | User's balance map in form of `currency: number`                       |
+| overallBalance | number | User's overall balance in usd                                          |
+| token          | number | _Optional._ Access token used to authenticate requests to Mamkin Trade |
 
 ### Ticker
 

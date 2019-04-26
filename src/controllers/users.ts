@@ -23,6 +23,6 @@ export default class {
     if (!user) {
       return ctx.throw(404, 'No user found')
     }
-    ctx.body = user.stripped()
+    ctx.body = user.strippedAndFilled()
   }
 }

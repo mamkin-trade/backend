@@ -10,7 +10,7 @@ export default class {
   async facebook(ctx: Context) {
     const fbProfile: any = await getFBUser(ctx.request.body.accessToken)
     const user = await getOrCreateUser(fbProfile.email, fbProfile.name)
-    ctx.body = user.stripped(true)
+    ctx.body = user.strippedAndFilled(true)
   }
 }
 

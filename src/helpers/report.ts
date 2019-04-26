@@ -14,7 +14,7 @@ export async function tryReport<T>(fun: (() => T) | Promise<T>) {
 }
 
 export async function report(err: Error) {
-  const dismissableErrors = []
+  const dismissableErrors = ['unexpected server response (429)', 'ECONNRESET']
   try {
     for (const errorText in dismissableErrors) {
       if (err.message.indexOf(errorText) > -1) {
