@@ -19,6 +19,7 @@
     "nodemon": "^1.18.11"
   },
   "dependencies": {
+    "@koa/cors": "^3.0.0",
     "@types/axios": "^0.14.0",
     "@types/dotenv": "^6.1.1",
     "@types/jsonwebtoken": "^8.3.2",
@@ -27,6 +28,8 @@
     "@types/mongoose": "^5.3.26",
     "@types/node": "^11.13.4",
     "axios": "^0.18.0",
+    "bitfinex-api-node": "^2.0.5",
+    "camelcase-keys-deep": "^0.1.0",
     "dotenv": "^7.0.0",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.7.0",
