@@ -8,13 +8,13 @@ import Facebook = require('facebook-node-sdk')
 export default class {
   @Post('/facebook')
   async facebook(ctx: Context) {
-    const fbProfile: any = await getUser(ctx.request.body.accessToken)
+    const fbProfile: any = await getFBUser(ctx.request.body.accessToken)
     const user = await getOrCreateUser(fbProfile.email, fbProfile.name)
     ctx.body = user.stripped(true)
   }
 }
 
-function getUser(accessToken: string) {
+function getFBUser(accessToken: string) {
   return new Promise((res, rej) => {
     const fb = new Facebook({
       appID: process.env.FACEBOOK_APP_ID,

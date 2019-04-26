@@ -5,6 +5,8 @@ import BFX = require('bitfinex-api-node')
 import { report } from './report'
 import { delay } from './delay'
 
+export let tickers: { [index: string]: Symbol & Ticker } = {}
+
 export interface Symbol {
   pair: string
   pricePrecision: number
@@ -15,24 +17,32 @@ export interface Symbol {
 }
 
 export interface Ticker {
-  mid: string
-  bid: string
-  ask: string
-  lastPrice: string
-  low: string
-  high: string
-  volume: string
-  timestamp: string
+  bid: number
+  bidSize: number
+  ask: number
+  askSize: number
+  dailyChange: number
+  dailyChangePerc: number
+  lastPrice: number
+  volume: number
+  high: number
+  low: number
 }
 
-export let symbolDetails: Symbol[]
 async function updateSymbolDetails() {
   const symbolDetailsResponse = await axios.get(
     'https://api.bitfinex.com/v1/symbols_details'
   )
-  symbolDetails = symbolDetailsResponse.data.map(v =>
+  const symbolDetails = symbolDetailsResponse.data.map(v =>
     camelcaseKeysDeep(v)
   ) as Symbol[]
+  for (const symbolDetail of symbolDetails) {
+    symbolDetail.pair = symbolDetail.pair.toUpperCase()
+    tickers[symbolDetail.pair] = Object.assign(
+      tickers[symbolDetail.pair] || {},
+      symbolDetail
+    ) as Symbol & Ticker
+  }
 }
 
 function startFetchingSymbolDetails() {
@@ -41,26 +51,56 @@ function startFetchingSymbolDetails() {
   }, 5 * 60 * 1000)
 }
 
-const bfx = new BFX()
-const ws = bfx.ws()
+let wss = []
+for (let i = 0; i < 4; i++) {
+  const j = i
+  const bfx = new BFX()
+  const ws = bfx.ws()
+  wss.push(ws)
 
-ws.on('error', async err => {
-  await report(err)
-})
-ws.on('open', () => {
-  ws.subscribeTrades('BTCUSD')
-  subscribeToTickers()
-})
-ws.on('close', async () => {
-  await delay(5)
-  ws.open()
-})
+  ws.on('error', async err => {
+    err.message = `${j} ${err.message}`
+    await report(err)
+  })
 
-function subscribeToTickers() {}
+  ws.on('open', () => {
+    console.log(`${j} Bitfinex sockets opened`)
+    subscribeToTickers(j, ws)
+  })
+  ws.on('close', async () => {
+    console.log(`${j} Bitfinex sockets closed`)
+    await delay(5)
+    ws.open()
+  })
+  ws.on('ticker', async (...args) => {
+    const symbol = args[0].substr(1)
+    tickers[symbol] = Object.assign(tickers[symbol], {
+      bid: args[1][0],
+      bidSize: args[1][1],
+      ask: args[1][2],
+      askSize: args[1][3],
+      dailyChange: args[1][4],
+      dailyChangePerc: args[1][5],
+      lastPrice: args[1][6],
+      volume: args[1][7],
+      high: args[1][8],
+      low: args[1][9],
+    }) as Symbol & Ticker
+  })
+}
+
+function subscribeToTickers(j: number, ws: any) {
+  Object.keys(tickers).forEach((symbol, i) => {
+    const k = Math.floor(i / 100)
+    if (k === j) {
+      wss[k].subscribeTicker(symbol.toUpperCase())
+    }
+  })
+}
 
 ;(async function setup() {
   await updateSymbolDetails()
-  ws.open()
+  wss.forEach(ws => ws.open())
 
   startFetchingSymbolDetails()
 })()

@@ -33,6 +33,12 @@ Returns [User](#user)
 | ----- | ------ | -------- | -------------- |
 | id    | string | Yes      | ID of the user |
 
+## `/market`
+
+### [Public] GET `/tickers`
+
+Returns list of [Tickers](#ticker) mapped by ticker pair name.
+
 # Data models
 
 ### User
@@ -44,3 +50,26 @@ Returns [User](#user)
 | name    | string | User's name                                                            |
 | balance | number | User's balance                                                         |
 | token   | number | _Optional._ Access token used to authenticate requests to Mamkin Trade |
+
+### Ticker
+
+| field            | type    | description                                                     |
+| ---------------- | ------- | --------------------------------------------------------------- |
+| pair             | string  | Name of the pair                                                |
+| pricePrecision   | number  | Maximum number of significant digits for price in this pair     |
+| initialMargin    | string  | Initial margin required to open a position in this pair         |
+| minimumMargin    | string  | Minimal margin to maintain (in %)                               |
+| maximumOrderSize | string  | Maximum order size of the pair                                  |
+| minimumOrderSize | string  | Minimum order size of the pair                                  |
+| expiration       | number  | Expiration date for limited contracts/pairs                     |
+| margin           | boolean | margin trading enabled for this pair                            |
+| bid              | number  | Price of last highest bid                                       |
+| bidSize          | number  | Size of the last highest bid                                    |
+| ask              | number  | Price of last lowest ask                                        |
+| askSize          | number  | Size of the last lowest ask                                     |
+| dailyChange      | number  | Amount that the last price has changed since yesterday          |
+| dailyChangePerc  | number  | Amount that the price has changed expressed in percentage terms |
+| lastPrice        | number  | Price of the last trade                                         |
+| volume           | number  | Daily volume                                                    |
+| high             | number  | Daily high                                                      |
+| low              | number  | Daily low                                                       |

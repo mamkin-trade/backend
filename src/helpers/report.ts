@@ -21,10 +21,12 @@ export async function report(err: Error) {
         return
       }
     }
-    const text = `MT Error:\n<code>${err.message ||
-      JSON.stringify(err)}</code>\n\n<code>${err.stack
-      .replace('<', '{{')
-      .replace('>', '}}')}</code>`
+    let text = `MT Error:\n<code>${err.message || JSON.stringify(err)}</code>`
+    if (err.stack) {
+      text = `${text}\n\n<code>${err.stack
+        .replace('<', '{{')
+        .replace('>', '}}')}</code>`
+    }
     bot.telegram.sendMessage(process.env.TELEGRAM_ADMIN, text, {
       parse_mode: 'HTML',
     })
