@@ -10,7 +10,7 @@
   "scripts": {
     "distribute": "yarn build-ts && node dist/app.js",
     "develop": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold\" \"yarn watch-ts\" \"yarn watch-js\"",
-    "build-ts": "yarn install && tsc --skipLibCheck",
+    "build-ts": "tsc --skipLibCheck",
     "watch-ts": "tsc -w --skipLibCheck",
     "watch-js": "nodemon dist/app.js"
   },
