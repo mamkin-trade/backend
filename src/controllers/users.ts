@@ -17,7 +17,7 @@ export default class {
     ]
   }
 
-  @Get('/:id', authenticate)
+  @Get('/:id')
   async user(ctx: Context) {
     const user = await UserModel.findOne({ _id: ctx.params.id })
     if (!user) {
