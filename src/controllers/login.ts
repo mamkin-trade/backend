@@ -18,8 +18,6 @@ export default class {
   async email(ctx: Context) {
     const email = ctx.request.body.email
     const user = await getOrCreateUser(email)
-    ctx.body = {
-      accessToken: user.token,
-    }
+    ctx.body = user.stripped(true)
   }
 }

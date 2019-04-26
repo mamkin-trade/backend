@@ -9,10 +9,10 @@ export async function authenticate(ctx: Context, next: Function) {
     const payload = (await verify(token)) as any
     const user = await UserModel.findOne({ email: payload.email })
     if (!user) {
-      return ctx.throw(403, 'No user found')
+      return ctx.throw(403, 'No user found to authenticate')
     }
     ctx.state.user = user
-    next()
+    await next()
   } catch (err) {
     ctx.throw(403, `Authentication failed: ${err.message}`)
   }

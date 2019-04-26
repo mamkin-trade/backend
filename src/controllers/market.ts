@@ -1,12 +1,10 @@
 // Dependencies
 import { Context } from 'koa'
 import { Controller, Get } from 'koa-router-ts'
-import { authenticate } from '../middlewares/authenticate'
-import { UserModel } from '../models'
 
-@Controller('/users')
+@Controller('/market')
 export default class {
-  @Get('/leaderboard')
+  @Get('/symbols')
   async leadeboard(ctx: Context) {
     ctx.body = [
       { name: 'James Bond', balance: 1000000 },
@@ -15,14 +13,5 @@ export default class {
       { name: 'Khalesee Dayeneris', balance: 125000 },
       { name: 'Noice Fun', balance: 62500 },
     ]
-  }
-
-  @Get('/:id', authenticate)
-  async user(ctx: Context) {
-    const user = await UserModel.findOne({ _id: ctx.params.id })
-    if (!user) {
-      return ctx.throw(404, 'No user found')
-    }
-    ctx.body = user.stripped()
   }
 }

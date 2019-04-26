@@ -39,6 +39,7 @@ Returns [User](#user)
 
 | field   | type   | description                                                            |
 | ------- | ------ | ---------------------------------------------------------------------- |
+| \_id    | string | Database ID                                                            |
 | email   | string | User's email                                                           |
 | balance | number | User's balance                                                         |
 | token   | number | _Optional._ Access token used to authenticate requests to Mamkin Trade |
