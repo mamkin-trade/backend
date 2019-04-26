@@ -6,6 +6,8 @@ import { omit } from 'lodash'
 export class User extends Typegoose {
   @prop({ required: true, index: true, unique: true, lowercase: true })
   email: string
+  @prop({ required: true, index: true, unique: true })
+  name: string
 
   @prop({ required: true, index: true, unique: true })
   token: string
@@ -30,10 +32,14 @@ export const UserModel = new User().getModelForClass(User, {
   schemaOptions: { timestamps: true },
 })
 
-export async function getOrCreateUser(email: string) {
+export async function getOrCreateUser(email: string, name: string) {
   let user = await UserModel.findOne({ email })
   if (!user) {
-    user = await new UserModel({ email, token: await sign({ email }) }).save()
+    user = await new UserModel({
+      email,
+      name,
+      token: await sign({ email }),
+    }).save()
   }
   return user
 }

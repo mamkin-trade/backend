@@ -12,8 +12,13 @@ And you should be good to go! Feel free to fork and submit pull requests. Thanks
 
 ## Environment variables
 
-- `MONGO`— URL of the mongo database
-- `JWT`— secret for JWT
+| Name                                     | Description                                 |
+| ---------------------------------------- | ------------------------------------------- |
+| `MONGO`                                  | URL of the mongo database                   |
+| `JWT`                                    | secret for JWT                              |
+| `TELEGRAM_TOKEN`                         | token for the telegram reporter bot         |
+| `TELEGRAM_ADMIN`                         | admin id on the telegram for seding reports |
+| `FACEBOOK_APP_ID`, `FACEBOOK_APP_SECRET` | Facebook login credentials                  |
 
 Also, please, consider looking at `.env.sample`.
 

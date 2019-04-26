@@ -13,9 +13,9 @@ Signs up with facebook, returns [User](#user).
 
 #### Parameters
 
-| field       | type   | Required | description                        |
-| ----------- | ------ | -------- | ---------------------------------- |
-| accessToken | string | Yes      | Access token obatins from Facebook |
+| field       | type   | Required | description                         |
+| ----------- | ------ | -------- | ----------------------------------- |
+| accessToken | string | Yes      | Access token obatined from Facebook |
 
 ## `/users`
 
@@ -41,5 +41,6 @@ Returns [User](#user)
 | ------- | ------ | ---------------------------------------------------------------------- |
 | \_id    | string | Database ID                                                            |
 | email   | string | User's email                                                           |
+| name    | string | User's name                                                            |
 | balance | number | User's balance                                                         |
 | token   | number | _Optional._ Access token used to authenticate requests to Mamkin Trade |

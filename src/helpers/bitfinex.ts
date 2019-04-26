@@ -2,6 +2,8 @@
 import axios from 'axios'
 import camelcaseKeysDeep = require('camelcase-keys-deep')
 import BFX = require('bitfinex-api-node')
+import { report } from './report'
+import { delay } from './delay'
 
 export interface Symbol {
   pair: string
@@ -33,14 +35,32 @@ async function updateSymbolDetails() {
   ) as Symbol[]
 }
 
-;(async function setup() {
-  await updateSymbolDetails()
-
-  startFetchingSymbolDetails()
-})()
-
 function startFetchingSymbolDetails() {
   setInterval(async () => {
     await updateSymbolDetails()
   }, 5 * 60 * 1000)
 }
+
+const bfx = new BFX()
+const ws = bfx.ws()
+
+ws.on('error', async err => {
+  await report(err)
+})
+ws.on('open', () => {
+  ws.subscribeTrades('BTCUSD')
+  subscribeToTickers()
+})
+ws.on('close', async () => {
+  await delay(5)
+  ws.open()
+})
+
+function subscribeToTickers() {}
+
+;(async function setup() {
+  await updateSymbolDetails()
+  ws.open()
+
+  startFetchingSymbolDetails()
+})()
