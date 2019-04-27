@@ -48,11 +48,37 @@ Returns list of [Orders](#order) for the user.
 
 #### Parameters
 
-| field | type   | Required | description                      |
-| ----- | ------ | -------- | -------------------------------- |
-| id    | string | Yes      | ID of the user                   |
-| skip  | number | Optional | Pagination skip, defaults to 0   |
-| limit | number | Optional | Pagination limit, defaults to 20 |
+| field     | type    | Required | description                               |
+| --------- | ------- | -------- | ----------------------------------------- |
+| id        | string  | Yes      | ID of the user                            |
+| skip      | number  | Optional | Pagination skip, defaults to 0            |
+| limit     | number  | Optional | Pagination limit, defaults to 20          |
+| completed | boolean | Optional | Return only complete or incomplete orders |
+| cancelled | boolean | Optional | Return only active or cancelled orders    |
+
+### POST `/order`
+
+Creates [Order](#order).
+
+#### Parameters
+
+| field  | type   | Required | description                                          |
+| ------ | ------ | -------- | ---------------------------------------------------- |
+| symbol | string | Yes      | Symbol such as "BTCUSD"                              |
+| amount | number | Yes      | Amount of the order                                  |
+| side   | string | Yes      | Side of the order, can be either "buy" or "sell"     |
+| type   | string | Yes      | Type of the order, can be either "market" or "limit" |
+| price  | number | Optional | Price of the order, not available for "market" type  |
+
+### DELETE `/order/:id`
+
+Cancels [Order](#order).
+
+#### Parameters
+
+| field | type   | Required | description               |
+| ----- | ------ | -------- | ------------------------- |
+| id    | string | Yes      | ID of the order to cancel |
 
 # Data models
 
@@ -92,10 +118,13 @@ Returns list of [Orders](#order) for the user.
 
 ### Order
 
-| field  | type   | description                                          |
-| ------ | ------ | ---------------------------------------------------- |
-| symbol | string | Name of the symbol                                   |
-| amount | number | Amount of currency in the order                      |
-| price  | number | Price of the order                                   |
-| side   | string | Side of the order, can be either "buy" or "sell"     |
-| type   | string | Type of the order, can be either "market" or "limit" |
+| field          | type    | description                                          |
+| -------------- | ------- | ---------------------------------------------------- |
+| symbol         | string  | Name of the symbol                                   |
+| amount         | number  | Amount of currency in the order                      |
+| price          | number  | Price of the order                                   |
+| side           | string  | Side of the order, can be either "buy" or "sell"     |
+| type           | string  | Type of the order, can be either "market" or "limit" |
+| completed      | boolean | Whether order is fullfilled                          |
+| cancelled      | boolean | Whether order is cancelled                           |
+| completionDate | Date    | _Optional._ When the order was completed             |

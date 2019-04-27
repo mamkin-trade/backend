@@ -12,8 +12,8 @@ export async function authenticate(ctx: Context, next: Function) {
       return ctx.throw(403, 'No user found to authenticate')
     }
     ctx.state.user = user
-    await next()
   } catch (err) {
-    ctx.throw(403, `Authentication failed: ${err.message}`)
+    return ctx.throw(403, `Authentication failed: ${err.message}`)
   }
+  await next()
 }

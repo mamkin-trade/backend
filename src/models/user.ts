@@ -22,7 +22,7 @@ export class User extends Typegoose {
 
   @instanceMethod
   strippedAndFilled(withToken = false) {
-    const stripFields = ['createdAt', 'updatedAt', '__v']
+    const stripFields = ['createdAt', 'updatedAt', '__v', 'orders']
     if (!withToken) {
       stripFields.push('token')
     }

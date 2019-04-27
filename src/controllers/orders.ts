@@ -1,29 +1,150 @@
 // Dependencies
 import { Context } from 'koa'
-import { Controller, Get } from 'koa-router-ts'
+import { Controller, Get, Post, Delete } from 'koa-router-ts'
 import { authenticate } from '../middlewares/authenticate'
-import { UserModel } from '../models'
+import {
+  UserModel,
+  OrderModel,
+  OrderType,
+  OrderSide,
+  User,
+  Order,
+} from '../models'
+import { tickers } from '../helpers/bitfinex'
+import { executeLocked } from '../helpers/locker'
+import { InstanceType } from 'typegoose'
 
 @Controller('/orders')
 export default class {
   @Get('/user/:id')
   async orders(ctx: Context) {
-    const user = await UserModel.findOne(
-      { _id: ctx.params.id },
-      { orders: { $slice: [ctx.params.skip || 0, ctx.params.limit || 20] } }
-    )
+    // Construct query
+    const query: any = { _id: ctx.params.id }
+    if (ctx.params.completed !== undefined) {
+      query.completed = ctx.params.completed
+    }
+    if (ctx.params.cancelled !== undefined) {
+      query.cancelled = ctx.params.cancelled
+    }
+    // Run query
+    const user = await UserModel.findOne(query, {
+      orders: { $slice: [ctx.params.skip || 0, ctx.params.limit || 20] },
+    })
+      .sort({ 'orders.createdAt': -1 })
+      .populate('orders')
     if (!user) {
       return ctx.throw(404, 'No user found')
     }
-    ctx.body = user.orders
+    ctx.body = user.orders.map((o: InstanceType<Order>) => o.stripped())
   }
 
-  @Get('/:id', authenticate)
-  async user(ctx: Context) {
-    const user = await UserModel.findOne({ _id: ctx.params.id })
-    if (!user) {
-      return ctx.throw(404, 'No user found')
+  @Post('/order', authenticate)
+  async postOrder(ctx: Context) {
+    // Destruct params
+    const { symbol, amount, side, type } = ctx.request.body
+    let price = ctx.params.price
+    // Get current price
+    if (type === 'market') {
+      const uppercaseSymbol = symbol.toUpperCase()
+      price =
+        side === OrderSide.buy
+          ? tickers[uppercaseSymbol].ask
+          : tickers[uppercaseSymbol].bid
     }
-    ctx.body = user.strippedAndFilled()
+    // Create order
+    const isTypeMarket = type === OrderType.market
+    let order = new OrderModel({
+      symbol,
+      amount,
+      side,
+      type,
+      completed: isTypeMarket,
+      price,
+      user: ctx.state.user,
+      heldAmount: side === OrderSide.buy ? amount * price : amount,
+    })
+    // Check if user can afford this order and add or execute it
+    let user = ctx.state.user as InstanceType<User>
+    await executeLocked(user.id, async () => {
+      // Destruct symbols
+      const first = symbol.substr(0, 3).toLowerCase()
+      const second = symbol.substr(3, 3).toLowerCase()
+      // Get fresh user
+      user = await UserModel.findOne({ _id: user.id })
+      // Check if user has enough currency
+      if (
+        (order.side === OrderSide.buy &&
+          user.balance[second] < amount * price) ||
+        (order.side === OrderSide.sell && (user.balance[first] || 0) < amount)
+      ) {
+        return ctx.throw(403, 'Insufficient funds')
+      }
+      console.log(
+        order.side,
+        user.balance[first],
+        user.balance[second],
+        amount,
+        price,
+        amount * price
+      )
+      // Execute
+      if (type === OrderType.market) {
+        if (side === OrderSide.buy) {
+          user.balance[second] = user.balance[second] - order.heldAmount
+          user.balance[first] = (user.balance[first] || 0) + amount
+        } else {
+          user.balance[first] = user.balance[first] - order.heldAmount
+          user.balance[second] = (user.balance[second] || 0) + amount * price
+        }
+        user.markModified('balance')
+        order.completionDate = new Date()
+      }
+      // Add order and save user
+      order = await order.save()
+      user.orders.push(order)
+      user = await user.save()
+      // Return ok
+      ctx.body = order.stripped()
+    })
+  }
+
+  @Delete('/order/:id', authenticate)
+  async deleteOrder(ctx: Context) {
+    // Get user
+    let user = ctx.state.user as InstanceType<User>
+    // Get order
+    let order = await OrderModel.findOne({ _id: ctx.params.id })
+    // Validate order
+    if (!order || order.user !== ctx.state.user.id) {
+      return ctx.throw(404, 'Order not found')
+    }
+    if (order.completed) {
+      return ctx.throw(403, 'Order is already completed')
+    }
+    if (order.cancelled) {
+      return ctx.throw(403, 'Order is already cancelled')
+    }
+    // Cancel order
+    await executeLocked(user.id, async () => {
+      // Get fresh order
+      order = await OrderModel.findOne({ _id: order.id })
+      // Get fresh user
+      user = await UserModel.findOne({ _id: user.id })
+      // Cancel it
+      order.cancelled = true
+      // Refund the money
+      const first = order.symbol.substr(0, 3).toLowerCase()
+      const second = order.symbol.substr(3, 3).toLowerCase()
+      const incrementField = order.side === OrderSide.buy ? second : first
+      user.balance[incrementField] =
+        user.balance[incrementField] + order.heldAmount
+      user.markModified('balance')
+      // Save user
+      await user.save()
+      // Save the order
+      await order.save()
+      // Return ok
+      ctx.body = order.stripped()
+    })
   }
 }

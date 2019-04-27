@@ -1,7 +1,6 @@
 // Dependencies
 import { Context } from 'koa'
 import { Controller, Get } from 'koa-router-ts'
-import { authenticate } from '../middlewares/authenticate'
 import { UserModel } from '../models'
 
 @Controller('/users')

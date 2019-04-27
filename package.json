@@ -38,6 +38,7 @@
     "koa-router-ts": "^2.0.0",
     "lodash": "^4.17.11",
     "mongoose": "^5.5.2",
+    "semaphore-async-await": "^1.5.1",
     "telegraf": "^3.29.0",
     "typegoose": "^5.6.0",
     "typescript": "^3.4.3"
