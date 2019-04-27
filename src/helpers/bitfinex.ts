@@ -37,6 +37,16 @@ async function updateSymbolDetails() {
     camelcaseKeysDeep(v)
   ) as Symbol[]
   for (const symbolDetail of symbolDetails) {
+    const skipCurrencies = ['eur', 'gbp', 'jpy', 'usdt']
+    let skip = false
+    for (const skipCurrency of skipCurrencies) {
+      if (symbolDetail.pair.toLowerCase().indexOf(skipCurrency) > -1) {
+        skip = true
+      }
+    }
+    if (skip) {
+      continue
+    }
     symbolDetail.pair = symbolDetail.pair.toUpperCase()
     tickers[symbolDetail.pair] = Object.assign(
       tickers[symbolDetail.pair] || {},

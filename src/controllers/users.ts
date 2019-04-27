@@ -18,7 +18,9 @@ export default class {
 
   @Get('/:id')
   async user(ctx: Context) {
-    const user = await UserModel.findOne({ _id: ctx.params.id })
+    const user = await UserModel.findOne({ _id: ctx.params.id }).populate(
+      'orders'
+    )
     if (!user) {
       return ctx.throw(404, 'No user found')
     }

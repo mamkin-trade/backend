@@ -3,7 +3,7 @@ import { sign } from '../helpers/jwt'
 import { prop, Typegoose, instanceMethod, arrayProp, Ref } from 'typegoose'
 import { omit } from 'lodash'
 import { tickers } from '../helpers/bitfinex'
-import { Order } from './order'
+import { Order, OrderSide } from './order'
 
 export class User extends Typegoose {
   @prop({ required: true, index: true, unique: true, lowercase: true })
@@ -27,6 +27,34 @@ export class User extends Typegoose {
       stripFields.push('token')
     }
     this._doc.overallBalance = this.overallBalance
+    for (const activeOrder of this.orders.filter(
+      (o: Order) => !o.completed && !o.cancelled
+    ) as Order[]) {
+      // Destruct symbols
+      const first = activeOrder.symbol.substr(0, 3).toLowerCase()
+      const second = activeOrder.symbol.substr(3, 3).toLowerCase()
+      // Add balances from orders
+      if (activeOrder.side === OrderSide.buy) {
+        if (second === 'usd') {
+          this._doc.overallBalance += activeOrder.heldAmount
+        } else {
+          const conversionRate = tickers[`${second.toUpperCase()}USD`]
+          this._doc.overallBalance +=
+            activeOrder.heldAmount * conversionRate.bid
+        }
+      } else {
+        const value = activeOrder.heldAmount
+        const simpleRate = tickers[`${first.toUpperCase()}USD`]
+        if (simpleRate) {
+          this._doc.overallBalance += value * simpleRate.bid
+        } else {
+          const firstConversionRate = tickers[`${first.toUpperCase()}BTC`]
+          const secondConversionRate = tickers['BTCUSD']
+          this._doc.overallBalance +=
+            value * firstConversionRate.bid * secondConversionRate.bid
+        }
+      }
+    }
     return omit(this._doc, stripFields)
   }
 
@@ -60,7 +88,7 @@ export const UserModel = new User().getModelForClass(User, {
 })
 
 export async function getOrCreateUser(email: string, name: string) {
-  let user = await UserModel.findOne({ email })
+  let user = await UserModel.findOne({ email }).populate('orders')
   if (!user) {
     user = await new UserModel({
       email,
