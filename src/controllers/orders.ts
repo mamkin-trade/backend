@@ -27,22 +27,24 @@ export default class {
       query.cancelled = ctx.params.cancelled
     }
     // Run query
-    const user = await UserModel.findOne(query, {
-      orders: { $slice: [ctx.params.skip || 0, ctx.params.limit || 20] },
-    })
-      .sort({ 'orders.createdAt': -1 })
-      .populate('orders')
+    const user = await UserModel.findOne(query).populate('orders')
     if (!user) {
       return ctx.throw(404, 'No user found')
     }
-    ctx.body = user.orders.map((o: InstanceType<Order>) => o.stripped())
+    const orders = user.orders
+      .sort((a: InstanceType<Order>, b: InstanceType<Order>) =>
+        a._doc.createdAt > b._doc.createdAt ? -1 : 1
+      )
+      .slice(ctx.request.body.skip || 0, ctx.request.body.limit || 20)
+      .map((o: InstanceType<Order>) => o.stripped())
+    ctx.body = orders
   }
 
   @Post('/order', authenticate)
   async postOrder(ctx: Context) {
     // Destruct params
     const { symbol, amount, side, type } = ctx.request.body
-    let price = ctx.params.price
+    let price = ctx.request.body.price
     // Get current price
     if (type === 'market') {
       const uppercaseSymbol = symbol.toUpperCase()
@@ -79,26 +81,20 @@ export default class {
       ) {
         return ctx.throw(403, 'Insufficient funds')
       }
-      console.log(
-        order.side,
-        user.balance[first],
-        user.balance[second],
-        amount,
-        price,
-        amount * price
-      )
       // Execute
-      if (type === OrderType.market) {
-        if (side === OrderSide.buy) {
-          user.balance[second] = user.balance[second] - order.heldAmount
+      if (side === OrderSide.buy) {
+        user.balance[second] = user.balance[second] - order.heldAmount
+        if (type === OrderType.market) {
           user.balance[first] = (user.balance[first] || 0) + amount
-        } else {
-          user.balance[first] = user.balance[first] - order.heldAmount
+        }
+      } else {
+        user.balance[first] = user.balance[first] - order.heldAmount
+        if (type === OrderType.market) {
           user.balance[second] = (user.balance[second] || 0) + amount * price
         }
-        user.markModified('balance')
-        order.completionDate = new Date()
       }
+      user.markModified('balance')
+      order.completionDate = new Date()
       // Add order and save user
       order = await order.save()
       user.orders.push(order)
@@ -115,7 +111,10 @@ export default class {
     // Get order
     let order = await OrderModel.findOne({ _id: ctx.params.id })
     // Validate order
-    if (!order || order.user !== ctx.state.user.id) {
+    if (
+      !order ||
+      (order.user as InstanceType<User>)._id.toString() !== ctx.state.user.id
+    ) {
       return ctx.throw(404, 'Order not found')
     }
     if (order.completed) {
