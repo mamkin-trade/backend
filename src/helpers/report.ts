@@ -22,7 +22,7 @@ export async function report(err: Error) {
         .replace('<', '{{')
         .replace('>', '}}')}</code>`
     }
-    for (const errorText in dismissableErrors) {
+    for (const errorText of dismissableErrors) {
       if (text.indexOf(errorText) > -1) {
         return
       }

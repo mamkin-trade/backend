@@ -17,7 +17,7 @@ export class Order extends Typegoose {
   @prop({ required: true, ref: User })
   user: Ref<User>
 
-  @prop({ required: true, index: true })
+  @prop({ required: true, index: true, uppercase: true })
   symbol: string
   @prop({ required: true, validate: v => v > 0 })
   amount: number
