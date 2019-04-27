@@ -1,7 +1,8 @@
 # General notes
 
-- API runs on port `1338`
+- API runs at https://backend.mamkin.trade
 - [Insomnia](https://insomnia.rest/) schema is in this folder as well
+- After obtaining `token` at `/login` you should sign all private requests with it putting it into `token` header
 
 # API documentation
 
@@ -23,7 +24,7 @@ Signs up with facebook, returns [User](#user).
 
 Returns list of [Users](#user) with the highest balances, exluding users without trade history.
 
-### GET `/:id`
+### [Public] GET `/:id`
 
 Returns [User](#user)
 
@@ -38,6 +39,20 @@ Returns [User](#user)
 ### [Public] GET `/tickers`
 
 Returns list of [Tickers](#ticker) mapped by ticker pair name.
+
+## `/orders`
+
+### [Public] GET `/user/:id`
+
+Returns list of [Orders](#order) for the user.
+
+#### Parameters
+
+| field | type   | Required | description                      |
+| ----- | ------ | -------- | -------------------------------- |
+| id    | string | Yes      | ID of the user                   |
+| skip  | number | Optional | Pagination skip, defaults to 0   |
+| limit | number | Optional | Pagination limit, defaults to 20 |
 
 # Data models
 
@@ -74,3 +89,13 @@ Returns list of [Tickers](#ticker) mapped by ticker pair name.
 | volume           | number  | Daily volume                                                    |
 | high             | number  | Daily high                                                      |
 | low              | number  | Daily low                                                       |
+
+### Order
+
+| field  | type   | description                                          |
+| ------ | ------ | ---------------------------------------------------- |
+| symbol | string | Name of the symbol                                   |
+| amount | number | Amount of currency in the order                      |
+| price  | number | Price of the order                                   |
+| side   | string | Side of the order, can be either "buy" or "sell"     |
+| type   | string | Type of the order, can be either "market" or "limit" |

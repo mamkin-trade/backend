@@ -8,7 +8,7 @@
 4. Run `yarn install` in the root folder
 5. Run `yarn develop`
 
-And you should be good to go! Feel free to fork and submit pull requests. Thanks!
+And you should be good to go! Feel free to fork and submit pull requests. Documentation is [also available](https://github.com/mamkin-trade/backend/tree/master/docs) in this repo.
 
 ## Environment variables
 

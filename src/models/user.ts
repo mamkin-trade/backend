@@ -1,8 +1,9 @@
 // Dependencies
 import { sign } from '../helpers/jwt'
-import { prop, Typegoose, instanceMethod } from 'typegoose'
+import { prop, Typegoose, instanceMethod, arrayProp, Ref } from 'typegoose'
 import { omit } from 'lodash'
 import { tickers } from '../helpers/bitfinex'
+import { Order } from './order'
 
 export class User extends Typegoose {
   @prop({ required: true, index: true, unique: true, lowercase: true })
@@ -15,6 +16,9 @@ export class User extends Typegoose {
 
   @prop({ required: true, default: { usd: 10000 } })
   balance: object
+
+  @arrayProp({ required: true, itemsRef: Order, default: [] })
+  orders: Ref<Order>[]
 
   @instanceMethod
   strippedAndFilled(withToken = false) {
