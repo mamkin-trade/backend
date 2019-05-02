@@ -105,16 +105,16 @@ Cancels [Order](#order).
 | minimumOrderSize | string  | Minimum order size of the pair                                  |
 | expiration       | number  | Expiration date for limited contracts/pairs                     |
 | margin           | boolean | margin trading enabled for this pair                            |
-| bid              | number  | Price of last highest bid                                       |
-| bidSize          | number  | Size of the last highest bid                                    |
-| ask              | number  | Price of last lowest ask                                        |
-| askSize          | number  | Size of the last lowest ask                                     |
-| dailyChange      | number  | Amount that the last price has changed since yesterday          |
-| dailyChangePerc  | number  | Amount that the price has changed expressed in percentage terms |
-| lastPrice        | number  | Price of the last trade                                         |
-| volume           | number  | Daily volume                                                    |
-| high             | number  | Daily high                                                      |
-| low              | number  | Daily low                                                       |
+| bid              | number  | _Optional._ Price of last highest bid                                       |
+| bidSize          | number  | _Optional._ Size of the last highest bid                                    |
+| ask              | number  | _Optional._ Price of last lowest ask                                        |
+| askSize          | number  | _Optional._ Size of the last lowest ask                                     |
+| dailyChange      | number  | _Optional._ Amount that the last price has changed since yesterday          |
+| dailyChangePerc  | number  | _Optional._ Amount that the price has changed expressed in percentage terms |
+| lastPrice        | number  | _Optional._ Price of the last trade                                         |
+| volume           | number  | _Optional._ Daily volume                                                    |
+| high             | number  | _Optional._ Daily high                                                      |
+| low              | number  | _Optional._ Daily low                                                       |
 
 ### Order
 
