@@ -7,13 +7,8 @@ import { UserModel } from '../models'
 export default class {
   @Get('/leaderboard')
   async leadeboard(ctx: Context) {
-    ctx.body = [
-      { name: 'James Bond', balance: 1000000 },
-      { name: 'Pavel Durov', balance: 500000 },
-      { name: 'Send Nudes', balance: 250000 },
-      { name: 'Khalesee Dayeneris', balance: 125000 },
-      { name: 'Noice Fun', balance: 62500 },
-    ]
+    const users = await UserModel.find().limit(10)
+    ctx.body = users.map(u => u.strippedAndFilled())
   }
 
   @Get('/:id')
