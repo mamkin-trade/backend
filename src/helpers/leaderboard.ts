@@ -8,7 +8,7 @@ async function updateLeaderboard() {
   try {
     leaderboard = (await UserModel.find().limit(10))
       .map(u => u.strippedAndFilled())
-      .sort((a, b) => (a._doc.overallBalance > b._doc.overallBalance ? -1 : 1))
+      .sort((a, b) => (a.overallBalance > b.overallBalance ? -1 : 1))
       .slice(0, 10)
   } catch (err) {
     report(err)
