@@ -95,16 +95,16 @@ Cancels [Order](#order).
 
 ### Ticker
 
-| field            | type    | description                                                     |
-| ---------------- | ------- | --------------------------------------------------------------- |
-| pair             | string  | Name of the pair                                                |
-| pricePrecision   | number  | Maximum number of significant digits for price in this pair     |
-| initialMargin    | string  | Initial margin required to open a position in this pair         |
-| minimumMargin    | string  | Minimal margin to maintain (in %)                               |
-| maximumOrderSize | string  | Maximum order size of the pair                                  |
-| minimumOrderSize | string  | Minimum order size of the pair                                  |
-| expiration       | number  | Expiration date for limited contracts/pairs                     |
-| margin           | boolean | margin trading enabled for this pair                            |
+| field            | type    | description                                                                 |
+| ---------------- | ------- | --------------------------------------------------------------------------- |
+| pair             | string  | Name of the pair                                                            |
+| pricePrecision   | number  | Maximum number of significant digits for price in this pair                 |
+| initialMargin    | string  | Initial margin required to open a position in this pair                     |
+| minimumMargin    | string  | Minimal margin to maintain (in %)                                           |
+| maximumOrderSize | string  | Maximum order size of the pair                                              |
+| minimumOrderSize | string  | Minimum order size of the pair                                              |
+| expiration       | number  | Expiration date for limited contracts/pairs                                 |
+| margin           | boolean | margin trading enabled for this pair                                        |
 | bid              | number  | _Optional._ Price of last highest bid                                       |
 | bidSize          | number  | _Optional._ Size of the last highest bid                                    |
 | ask              | number  | _Optional._ Price of last lowest ask                                        |
@@ -127,4 +127,5 @@ Cancels [Order](#order).
 | type           | string  | Type of the order, can be either "market" or "limit" |
 | completed      | boolean | Whether order is fullfilled                          |
 | cancelled      | boolean | Whether order is cancelled                           |
+| createdAt      | Date    | When order was created                               |
 | completionDate | Date    | _Optional._ When the order was completed             |
