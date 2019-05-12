@@ -132,6 +132,7 @@ Cancels [Order](#order).
 
 | field          | type    | description                                          |
 | -------------- | ------- | ---------------------------------------------------- |
+| \_id           | string  | Database ID                                          |
 | symbol         | string  | Name of the symbol                                   |
 | amount         | number  | Amount of currency in the order                      |
 | price          | number  | Price of the order                                   |
