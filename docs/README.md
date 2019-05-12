@@ -44,7 +44,7 @@ Returns list of [Tickers](#ticker) mapped by ticker pair name.
 
 ### [Public] GET `/user/:id`
 
-Returns list of [Orders](#order) for the user.
+Returns list of [Orders](#order) for the user as well as total `count` of users.
 
 #### Parameters
 

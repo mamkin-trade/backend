@@ -25,7 +25,7 @@ export default class {
     if (!user) {
       return ctx.throw(404, 'No user found')
     }
-    const orders = user.orders
+    let orders = user.orders
       .filter((o: Order) => {
         let valid = true
         if (ctx.params.completed !== undefined) {
@@ -43,9 +43,11 @@ export default class {
       .sort((a: InstanceType<Order>, b: InstanceType<Order>) =>
         a._doc.createdAt > b._doc.createdAt ? -1 : 1
       )
+    const count = orders.length
+    orders = orders
       .slice(ctx.request.body.skip || 0, ctx.request.body.limit || 20)
       .map((o: InstanceType<Order>) => o.stripped())
-    ctx.body = orders
+    ctx.body = { orders, count }
   }
 
   @Get('/user/:id/count')
