@@ -1,5 +1,5 @@
 // Dependencies
-import { UserModel } from '../models'
+import { UserModel, User } from '../models'
 import { report } from './report'
 
 export let leaderboard = []
@@ -10,7 +10,9 @@ async function updateLeaderboard() {
       .limit(10)
       .populate('orders'))
       .map(u => u.strippedAndFilled())
-      .sort((a, b) => (a.overallBalance > b.overallBalance ? -1 : 1))
+      .sort((a: User, b: User) =>
+        a.overallBalance > b.overallBalance ? -1 : 1
+      )
       .slice(0, 10)
   } catch (err) {
     report(err)

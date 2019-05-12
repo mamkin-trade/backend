@@ -45,10 +45,10 @@ export default class {
         a._doc.createdAt > b._doc.createdAt ? -1 : 1
       )
     const count = orders.length
-    orders = orders
+    const tempOrders = orders
       .slice(ctx.request.body.skip || 0, ctx.request.body.limit || 20)
       .map((o: InstanceType<Order>) => o.stripped())
-    ctx.body = { orders, count }
+    ctx.body = { orders: tempOrders, count }
   }
 
   @Get('/user/:id/count')
