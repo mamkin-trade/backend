@@ -56,6 +56,18 @@ Returns list of [Orders](#order) for the user.
 | completed | boolean | Optional | Return only complete or incomplete orders |
 | cancelled | boolean | Optional | Return only active or cancelled orders    |
 
+### [Public] GET `/user/:id/count`
+
+Returns total count of [Orders](#order) for the user.
+
+#### Parameters
+
+| field     | type    | Required | description                               |
+| --------- | ------- | -------- | ----------------------------------------- |
+| id        | string  | Yes      | ID of the user                            |
+| completed | boolean | Optional | Return only complete or incomplete orders |
+| cancelled | boolean | Optional | Return only active or cancelled orders    |
+
 ### POST `/order`
 
 Creates [Order](#order).

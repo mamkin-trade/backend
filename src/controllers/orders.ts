@@ -18,26 +18,60 @@ import { InstanceType } from 'typegoose'
 export default class {
   @Get('/user/:id')
   async orders(ctx: Context) {
-    // Construct query
-    const query: any = { _id: ctx.params.id }
-    if (ctx.params.completed !== undefined) {
-      query.completed = ctx.params.completed
-    }
-    if (ctx.params.cancelled !== undefined) {
-      query.cancelled = ctx.params.cancelled
-    }
     // Run query
-    const user = await UserModel.findOne(query).populate('orders')
+    const user = await UserModel.findOne({ _id: ctx.params.id }).populate(
+      'orders'
+    )
     if (!user) {
       return ctx.throw(404, 'No user found')
     }
     const orders = user.orders
+      .filter((o: Order) => {
+        let valid = true
+        if (ctx.params.completed !== undefined) {
+          if (o.completed !== ctx.params.completed) {
+            valid = false
+          }
+        }
+        if (ctx.params.cancelled !== undefined) {
+          if (o.cancelled !== ctx.params.cancelled) {
+            valid = false
+          }
+        }
+        return valid
+      })
       .sort((a: InstanceType<Order>, b: InstanceType<Order>) =>
         a._doc.createdAt > b._doc.createdAt ? -1 : 1
       )
       .slice(ctx.request.body.skip || 0, ctx.request.body.limit || 20)
       .map((o: InstanceType<Order>) => o.stripped())
     ctx.body = orders
+  }
+
+  @Get('/user/:id/count')
+  async count(ctx: Context) {
+    // Run query
+    const user = await UserModel.findOne({ _id: ctx.params.id }).populate(
+      'orders'
+    )
+    if (!user) {
+      return ctx.throw(404, 'No user found')
+    }
+    const orders = user.orders.filter((o: Order) => {
+      let valid = true
+      if (ctx.params.completed !== undefined) {
+        if (o.completed !== ctx.params.completed) {
+          valid = false
+        }
+      }
+      if (ctx.params.cancelled !== undefined) {
+        if (o.cancelled !== ctx.params.cancelled) {
+          valid = false
+        }
+      }
+      return valid
+    })
+    ctx.body = { count: orders.length }
   }
 
   @Post('/order', authenticate)
