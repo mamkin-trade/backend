@@ -131,7 +131,9 @@ export default class {
         }
       }
       user.markModified('balance')
-      order.completionDate = new Date()
+      if (type === OrderType.market) {
+        order.completionDate = new Date()
+      }
       // Add order and save user
       order = await order.save()
       user.orders.push(order)
@@ -168,6 +170,8 @@ export default class {
       user = await UserModel.findOne({ _id: user.id })
       // Cancel it
       order.cancelled = true
+      // Add completion date
+      order.completionDate = new Date()
       // Refund the money
       const first = order.symbol.substr(0, 3).toLowerCase()
       const second = order.symbol.substr(3, 3).toLowerCase()
