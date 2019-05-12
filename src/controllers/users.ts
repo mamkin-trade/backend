@@ -3,6 +3,7 @@ import { Context } from 'koa'
 import { Controller, Get } from 'koa-router-ts'
 import { UserModel } from '../models'
 import { leaderboard } from '../helpers/leaderboard'
+import { errors } from '../helpers/errors'
 
 @Controller('/users')
 export default class {
@@ -17,7 +18,7 @@ export default class {
       'orders'
     )
     if (!user) {
-      return ctx.throw(404, 'No user found')
+      return ctx.throw(404, errors.noUser)
     }
     ctx.body = user.strippedAndFilled()
   }

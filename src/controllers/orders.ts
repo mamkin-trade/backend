@@ -13,6 +13,7 @@ import {
 import { tickers } from '../helpers/bitfinex'
 import { executeLocked } from '../helpers/locker'
 import { InstanceType } from 'typegoose'
+import { errors } from '../helpers/errors'
 
 @Controller('/orders')
 export default class {
@@ -23,7 +24,7 @@ export default class {
       'orders'
     )
     if (!user) {
-      return ctx.throw(404, 'No user found')
+      return ctx.throw(404, errors.noUser)
     }
     let orders = user.orders
       .filter((o: Order) => {
@@ -57,7 +58,7 @@ export default class {
       'orders'
     )
     if (!user) {
-      return ctx.throw(404, 'No user found')
+      return ctx.throw(404, errors.noUser)
     }
     const orders = user.orders.filter((o: Order) => {
       let valid = true
@@ -115,7 +116,7 @@ export default class {
           user.balance[second] < amount * price) ||
         (order.side === OrderSide.sell && (user.balance[first] || 0) < amount)
       ) {
-        return ctx.throw(403, 'Insufficient funds')
+        return ctx.throw(403, errors.insufficientFunds)
       }
       // Execute
       if (side === OrderSide.buy) {
@@ -151,13 +152,13 @@ export default class {
       !order ||
       (order.user as InstanceType<User>)._id.toString() !== ctx.state.user.id
     ) {
-      return ctx.throw(404, 'Order not found')
+      return ctx.throw(404, errors.orderNotFound)
     }
     if (order.completed) {
-      return ctx.throw(403, 'Order is already completed')
+      return ctx.throw(403, errors.orderCompleted)
     }
     if (order.cancelled) {
-      return ctx.throw(403, 'Order is already cancelled')
+      return ctx.throw(403, errors.orderCancelled)
     }
     // Cancel order
     await executeLocked(user.id, async () => {
