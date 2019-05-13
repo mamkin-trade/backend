@@ -14,6 +14,7 @@ import { tickers } from '../helpers/bitfinex'
 import { executeLocked } from '../helpers/locker'
 import { InstanceType } from 'typegoose'
 import { errors } from '../helpers/errors'
+import * as ordersValidators from '../validators/orders'
 
 @Controller('/orders')
 export default class {
@@ -77,7 +78,7 @@ export default class {
     ctx.body = { count: orders.length }
   }
 
-  @Post('/order', authenticate)
+  @Post('/order', authenticate, ordersValidators.postOrder)
   async postOrder(ctx: Context) {
     // Destruct params
     const { symbol, amount, side, type } = ctx.request.body
