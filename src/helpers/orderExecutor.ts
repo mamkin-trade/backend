@@ -53,7 +53,7 @@ async function checkOrders() {
               return
             }
             // Get fresh user
-            user = await UserModel.findOne({ _id: user.id })
+            user = await UserModel.findOne({ _id: user._id })
             // Destruct symbols
             const first = freshOrder.symbol.substr(0, 3).toLowerCase()
             const second = freshOrder.symbol.substr(3, 3).toLowerCase()
