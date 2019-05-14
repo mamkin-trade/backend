@@ -4,6 +4,7 @@ import { tickers } from './bitfinex'
 import { executeLocked } from './locker'
 import { InstanceType } from 'typegoose'
 import { report } from './report'
+import { Big } from 'big.js'
 
 let checking = false
 
@@ -58,12 +59,15 @@ async function checkOrders() {
             const second = freshOrder.symbol.substr(3, 3).toLowerCase()
             // Modify user
             if (freshOrder.side === OrderSide.buy) {
-              user.balance[first] =
-                (user.balance[first] || 0) + freshOrder.amount
+              user.balance[first] = Number(
+                new Big(user.balance[first] || 0).add(freshOrder.amount)
+              )
             } else {
-              user.balance[second] =
-                (user.balance[second] || 0) +
-                freshOrder.amount * freshOrder.price
+              user.balance[second] = Number(
+                new Big(user.balance[second] || 0).add(
+                  new Big(freshOrder.amount).mul(freshOrder.price)
+                )
+              )
             }
             user.markModified('balance')
             // Save user

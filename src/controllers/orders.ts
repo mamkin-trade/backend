@@ -14,7 +14,9 @@ import { tickers } from '../helpers/bitfinex'
 import { executeLocked } from '../helpers/locker'
 import { InstanceType } from 'typegoose'
 import { errors } from '../helpers/errors'
-import * as ordersValidators from '../validators/orders'
+import { Big } from 'big.js'
+import { precision } from '../helpers/precision'
+import { minimumOrderSize, maximumOrderSize } from '../helpers/orderSize'
 
 @Controller('/orders')
 export default class {
@@ -78,18 +80,49 @@ export default class {
     ctx.body = { count: orders.length }
   }
 
-  @Post('/order', authenticate, ordersValidators.postOrder)
+  @Post('/order', authenticate)
   async postOrder(ctx: Context) {
     // Destruct params
-    const { symbol, amount, side, type } = ctx.request.body
-    let price = ctx.request.body.price
+    const { symbol, side, type } = ctx.request.body
+    const amount = Number(ctx.request.body.amount) || 0
+    let price = new Big(ctx.request.body.price || 0)
+    // Split symbol
+    const firstCurrency = symbol.substr(0, 3)
+    const secondCurrency = symbol.substr(3)
     // Get current price
     if (type === 'market') {
       const uppercaseSymbol = symbol.toUpperCase()
       price =
         side === OrderSide.buy
-          ? tickers[uppercaseSymbol].ask
-          : tickers[uppercaseSymbol].bid
+          ? new Big(tickers[uppercaseSymbol].ask)
+          : new Big(tickers[uppercaseSymbol].bid)
+    }
+    // Check price
+    if (price.lte(0)) {
+      return ctx.throw(400)
+    }
+    if (
+      price.lt(
+        new Big(1).div(
+          new Big(10).pow(precision(firstCurrency) + precision(secondCurrency))
+        )
+      )
+    ) {
+      return ctx.throw(400)
+    }
+    if (price.gt(100000000)) {
+      return ctx.throw(400)
+    }
+    // Check amount
+    const bigAmount = new Big(amount)
+    if (bigAmount.lte(0)) {
+      return ctx.throw(400)
+    }
+    if (bigAmount.lt(minimumOrderSize(symbol))) {
+      return ctx.throw(400)
+    }
+    if (bigAmount.gt(maximumOrderSize(symbol))) {
+      return ctx.throw(400)
     }
     // Create order
     const isTypeMarket = type === OrderType.market
@@ -101,7 +134,7 @@ export default class {
       completed: isTypeMarket,
       price,
       user: ctx.state.user,
-      heldAmount: side === OrderSide.buy ? amount * price : amount,
+      heldAmount: side === OrderSide.buy ? Number(price.mul(amount)) : amount,
     })
     // Check if user can afford this order and add or execute it
     let user = ctx.state.user as InstanceType<User>
@@ -114,7 +147,7 @@ export default class {
       // Check if user has enough currency
       if (
         (order.side === OrderSide.buy &&
-          user.balance[second] < amount * price) ||
+          (user.balance[second] || 0) < Number(price.mul(amount))) ||
         (order.side === OrderSide.sell && (user.balance[first] || 0) < amount)
       ) {
         return ctx.throw(403, errors.insufficientFunds)
@@ -128,7 +161,9 @@ export default class {
       } else {
         user.balance[first] = user.balance[first] - order.heldAmount
         if (type === OrderType.market) {
-          user.balance[second] = (user.balance[second] || 0) + amount * price
+          user.balance[second] = Number(
+            price.mul(amount).add(user.balance[second] || 0)
+          )
         }
       }
       user.markModified('balance')

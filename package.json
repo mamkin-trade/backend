@@ -21,6 +21,7 @@
   "dependencies": {
     "@koa/cors": "^3.0.0",
     "@types/axios": "^0.14.0",
+    "@types/big.js": "^4.0.5",
     "@types/dotenv": "^6.1.1",
     "@types/jsonwebtoken": "^8.3.2",
     "@types/koa": "^2.0.48",
@@ -28,6 +29,7 @@
     "@types/mongoose": "^5.3.26",
     "@types/node": "^11.13.4",
     "axios": "^0.18.0",
+    "big.js": "^5.2.2",
     "bitfinex-api-node": "^2.0.5",
     "camelcase-keys-deep": "^0.1.0",
     "dotenv": "^7.0.0",
@@ -37,7 +39,6 @@
     "koa": "^2.7.0",
     "koa-bodyparser-ts": "^0.3.1",
     "koa-router-ts": "^2.0.0",
-    "koa2-joi-validator": "^1.0.5",
     "lodash": "^4.17.11",
     "mongoose": "^5.5.2",
     "semaphore-async-await": "^1.5.1",
