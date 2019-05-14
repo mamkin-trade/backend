@@ -10,10 +10,10 @@ import * as cors from '@koa/cors'
 import { startCheckingOrders } from './helpers/orderExecutor'
 
 const app = new Koa()
-app.use(cors())
 const router = loadControllers(`${__dirname}/controllers`, { recurse: true })
 
 // Run app
+app.use(cors({ origin: '*' }))
 app.use(bodyParser())
 app.use(router.routes())
 app.use(router.allowedMethods())
