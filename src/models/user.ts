@@ -25,6 +25,7 @@ export class User extends Typegoose {
     const stripFields = ['createdAt', 'updatedAt', '__v', 'orders']
     if (!withToken) {
       stripFields.push('token')
+      stripFields.push('email')
     }
     this._doc.overallBalance = this.overallBalance
     for (const activeOrder of this.orders.filter(
