@@ -65,6 +65,9 @@ export class User extends Typegoose {
         } else {
           const firstConversionRate = tickers[`${first.toUpperCase()}BTC`]
           const secondConversionRate = tickers['BTCUSD']
+          if (!firstConversionRate || !secondConversionRate) {
+            continue
+          }
           this._doc.overallBalance +=
             value * firstConversionRate.bid * secondConversionRate.bid
         }
