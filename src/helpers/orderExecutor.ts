@@ -77,6 +77,7 @@ async function checkOrders() {
             await user.save()
             // Modify and save order
             freshOrder.completed = true
+            freshOrder.completionDate = new Date()
             await freshOrder.save()
           })
         } catch (err) {
