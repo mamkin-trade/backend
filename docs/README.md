@@ -6,6 +6,12 @@
 
 # API documentation
 
+## `/`
+
+### [Public] POST `/stats`
+
+Returns Mamkin Trade statistics.
+
 ## `/login`
 
 ### [Public] POST `/facebook`
