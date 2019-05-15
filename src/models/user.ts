@@ -20,7 +20,7 @@ export class User extends Typegoose {
   @prop({ index: true, lowercase: true })
   telegramId?: string
 
-  @prop({ required: true, index: true, unique: true })
+  @prop({ required: true, index: true })
   name: string
 
   @prop({ required: true, index: true, unique: true })
