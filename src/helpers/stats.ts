@@ -8,7 +8,7 @@ async function updateStats() {
   try {
     const userCount = await UserModel.find().countDocuments()
     const ordersCount = await OrderModel.find().countDocuments()
-    const users = await UserModel.find()
+    const users = await UserModel.find().populate('orders')
     const filledUsers: any[] = users.map(u => {
       try {
         return u.strippedAndFilled()
