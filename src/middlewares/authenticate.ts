@@ -1,14 +1,20 @@
 // Dependencies
-import { UserModel } from '../models/user'
+import { UserModel, User } from '../models/user'
 import { Context } from 'koa'
 import { verify } from '../helpers/jwt'
 import { errors } from '../helpers/errors'
+import { InstanceType } from 'typegoose'
 
 export async function authenticate(ctx: Context, next: Function) {
   try {
     const token = ctx.headers.token
     const payload = (await verify(token)) as any
-    const user = await UserModel.findOne({ email: payload.email })
+    let user: InstanceType<User>
+    if (payload.email) {
+      user = await UserModel.findOne({ email: payload.email })
+    } else if (payload.facebookId) {
+      user = await UserModel.findOne({ facebookId: payload.facebookId })
+    }
     if (!user) {
       return ctx.throw(403, errors.noUser)
     }

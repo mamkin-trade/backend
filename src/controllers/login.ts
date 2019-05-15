@@ -9,7 +9,12 @@ export default class {
   @Post('/facebook')
   async facebook(ctx: Context) {
     const fbProfile: any = await getFBUser(ctx.request.body.accessToken)
-    const user = await getOrCreateUser(fbProfile.email, fbProfile.name)
+    const user = await getOrCreateUser({
+      name: fbProfile.name,
+
+      email: fbProfile.email,
+      facebookId: fbProfile.id,
+    })
     ctx.body = user.strippedAndFilled(true)
   }
 }
@@ -21,7 +26,7 @@ function getFBUser(accessToken: string) {
       secret: process.env.FACEBOOK_APP_SECRET,
     })
     fb.setAccessToken(accessToken)
-    fb.api('/me?fields=name,email', (err, user) => {
+    fb.api('/me?fields=name,email,id', (err, user) => {
       return err ? rej(err) : res(user)
     })
   })

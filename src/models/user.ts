@@ -1,13 +1,23 @@
 // Dependencies
 import { sign } from '../helpers/jwt'
-import { prop, Typegoose, instanceMethod, arrayProp, Ref } from 'typegoose'
+import {
+  prop,
+  Typegoose,
+  instanceMethod,
+  arrayProp,
+  Ref,
+  InstanceType,
+} from 'typegoose'
 import { omit } from 'lodash'
 import { tickers } from '../helpers/bitfinex'
 import { Order, OrderSide } from './order'
 
 export class User extends Typegoose {
-  @prop({ required: true, index: true, unique: true, lowercase: true })
-  email: string
+  @prop({ index: true, unique: true, lowercase: true })
+  email?: string
+  @prop({ index: true, unique: true, lowercase: true })
+  facebookId?: string
+
   @prop({ required: true, index: true, unique: true })
   name: string
 
@@ -26,6 +36,7 @@ export class User extends Typegoose {
     if (!withToken) {
       stripFields.push('token')
       stripFields.push('email')
+      stripFields.push('facebookId')
     }
     this._doc.overallBalance = this.overallBalance
     for (const activeOrder of this.orders.filter(
@@ -88,13 +99,42 @@ export const UserModel = new User().getModelForClass(User, {
   schemaOptions: { timestamps: true },
 })
 
-export async function getOrCreateUser(email: string, name: string) {
-  let user = await UserModel.findOne({ email }).populate('orders')
+interface LoginOptions {
+  email?: string
+  facebookId?: string
+
+  name: string
+}
+export async function getOrCreateUser(loginOptions: LoginOptions) {
+  if (!loginOptions.name) {
+    throw new Error()
+  }
+  let user: InstanceType<User> | undefined
+  // Try email
+  if (loginOptions.email) {
+    user = await UserModel.findOne({ email: loginOptions.email }).populate(
+      'orders'
+    )
+  }
+  // Try facebook id
+  if (!user && loginOptions.facebookId) {
+    user = await UserModel.findOne({
+      facebookId: loginOptions.facebookId,
+    }).populate('orders')
+  }
   if (!user) {
+    // Check if we have credentials
+    if (!(loginOptions.email || loginOptions.facebookId)) {
+      throw new Error()
+    }
     user = await new UserModel({
-      email,
-      name,
-      token: await sign({ email }),
+      email: loginOptions.email,
+      facebookId: loginOptions.facebookId,
+      name: loginOptions.name,
+      token: await sign({
+        email: loginOptions.email,
+        facebookId: loginOptions.facebookId,
+      }),
     }).save()
   }
   return user

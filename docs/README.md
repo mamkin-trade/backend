@@ -105,10 +105,11 @@ Cancels [Order](#order).
 | field          | type   | description                                                            |
 | -------------- | ------ | ---------------------------------------------------------------------- |
 | \_id           | string | Database ID                                                            |
-| email          | string | User's email                                                           |
 | name           | string | User's name                                                            |
 | balance        | object | User's balance map in form of `currency: number`                       |
 | overallBalance | number | User's overall balance in usd                                          |
+| email          | string | _Optional._ User's email                                               |
+| facebookId     | string | _Optional._ User's facebook ID                                         |
 | token          | number | _Optional._ Access token used to authenticate requests to Mamkin Trade |
 
 ### Ticker
