@@ -23,7 +23,6 @@ export default class {
   @Post('/telegram')
   async telegram(ctx: Context) {
     const data = ctx.request.body
-    console.log(data)
     // verify the data
     if (!Login.checkLoginData(data)) {
       throw new Error()
