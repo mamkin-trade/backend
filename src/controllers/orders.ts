@@ -48,7 +48,6 @@ export default class {
         a._doc.createdAt > b._doc.createdAt ? -1 : 1
       )
     const count = orders.length
-    console.log(ctx.request.query)
     const skip = parseInt(ctx.request.query.skip || 0, 10)
     const limit = parseInt(ctx.request.query.limit || 20, 10)
     const tempOrders = orders
