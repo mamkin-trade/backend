@@ -49,7 +49,7 @@ export default class {
       )
     const count = orders.length
     const tempOrders = orders
-      .slice(ctx.request.body.skip || 0, ctx.request.body.limit || 20)
+      .slice(ctx.request.query.skip || 0, ctx.request.query.limit || 20)
       .map((o: InstanceType<Order>) => o.stripped())
     ctx.body = { orders: tempOrders, count }
   }
