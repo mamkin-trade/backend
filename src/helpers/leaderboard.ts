@@ -6,9 +6,9 @@ export let leaderboard = []
 
 async function updateLeaderboard() {
   try {
-    leaderboard = (await UserModel.find({ 'orders.0': { $exists: true } })
-      .limit(10)
-      .populate('orders'))
+    leaderboard = (await UserModel.find({
+      'orders.0': { $exists: true },
+    }).populate('orders'))
       .map(u => u.strippedAndFilled())
       .sort((a: User, b: User) =>
         a.overallBalance > b.overallBalance ? -1 : 1
