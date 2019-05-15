@@ -13,7 +13,7 @@ import { tickers } from '../helpers/bitfinex'
 import { Order, OrderSide } from './order'
 
 export class User extends Typegoose {
-  @prop({ index: true, lowercase: true })
+  @prop({ index: true,  unique: true, lowercase: true })
   email?: string
   @prop({ index: true, unique: true, lowercase: true })
   facebookId?: string
@@ -143,15 +143,21 @@ export async function getOrCreateUser(loginOptions: LoginOptions) {
     if (!(loginOptions.email || loginOptions.facebookId || loginOptions.telegramId)) {
       throw new Error()
     }
-    user = await new UserModel({
-      email: loginOptions.email,
-      facebookId: loginOptions.facebookId,
-      telegramId: loginOptions.telegramId,
+    const params = {
       name: loginOptions.name,
-      token: await sign({
-        email: loginOptions.email,
-        facebookId: loginOptions.facebookId,
-      }),
+    } as any
+    if (loginOptions.email) {
+      params.email = loginOptions.email
+    }
+    if (loginOptions.facebookId) {
+      params.facebookId = loginOptions.facebookId
+    }
+    if (loginOptions.telegramId) {
+      params.telegramId = loginOptions.telegramId
+    }
+    user = await new UserModel({
+      ...params,
+      token: await sign(params),
     }).save()
   }
   return user
