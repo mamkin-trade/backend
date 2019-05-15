@@ -13,7 +13,7 @@ import { tickers } from '../helpers/bitfinex'
 import { Order, OrderSide } from './order'
 
 export class User extends Typegoose {
-  @prop({ index: true, unique: true, lowercase: true })
+  @prop({ index: true, lowercase: true })
   email?: string
   @prop({ index: true, unique: true, lowercase: true })
   facebookId?: string
