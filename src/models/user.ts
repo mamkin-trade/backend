@@ -17,6 +17,8 @@ export class User extends Typegoose {
   email?: string
   @prop({ index: true, unique: true, lowercase: true })
   facebookId?: string
+  @prop({ index: true, unique: true, lowercase: true })
+  telegramId?: string
 
   @prop({ required: true, index: true, unique: true })
   name: string
@@ -37,6 +39,7 @@ export class User extends Typegoose {
       stripFields.push('token')
       stripFields.push('email')
       stripFields.push('facebookId')
+      stripFields.push('telegramId')
     }
     this._doc.overallBalance = this.overallBalance
     for (const activeOrder of this.orders.filter(
@@ -102,6 +105,7 @@ export const UserModel = new User().getModelForClass(User, {
 interface LoginOptions {
   email?: string
   facebookId?: string
+  telegramId?: string
 
   name: string
 }
@@ -122,14 +126,21 @@ export async function getOrCreateUser(loginOptions: LoginOptions) {
       facebookId: loginOptions.facebookId,
     }).populate('orders')
   }
+  // Try telegram id
+  if (!user && loginOptions.telegramId) {
+    user = await UserModel.findOne({
+      telegramId: loginOptions.telegramId,
+    }).populate('orders')
+  }
   if (!user) {
     // Check if we have credentials
-    if (!(loginOptions.email || loginOptions.facebookId)) {
+    if (!(loginOptions.email || loginOptions.facebookId || loginOptions.telegramId)) {
       throw new Error()
     }
     user = await new UserModel({
       email: loginOptions.email,
       facebookId: loginOptions.facebookId,
+      telegramId: loginOptions.telegramId,
       name: loginOptions.name,
       token: await sign({
         email: loginOptions.email,
