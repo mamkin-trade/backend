@@ -40,6 +40,10 @@ Returns [User](#user)
 | ----- | ------ | -------- | -------------- |
 | id    | string | Yes      | ID of the user |
 
+### POST `/reset`
+
+Resets user's balance to \$10 000 and removes all orders.
+
 ## `/market`
 
 ### [Public] GET `/tickers`
