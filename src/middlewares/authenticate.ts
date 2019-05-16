@@ -9,6 +9,7 @@ export async function authenticate(ctx: Context, next: Function) {
   try {
     const token = ctx.headers.token
     const payload = (await verify(token)) as any
+    console.log(payload)
     let user: InstanceType<User>
     if (payload.email) {
       user = await UserModel.findOne({ email: payload.email })
