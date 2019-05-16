@@ -30,7 +30,8 @@ export async function report(err: Error) {
     bot.telegram.sendMessage(process.env.TELEGRAM_ADMIN, text, {
       parse_mode: 'HTML',
     })
-  } catch (err) {
+  } catch (error) {
     console.error(err)
+    console.error(error)
   }
 }
