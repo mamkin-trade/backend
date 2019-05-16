@@ -1,10 +1,11 @@
 // Dependencies
+import axios from 'axios'
 import { Context } from 'koa'
 import { getOrCreateUser } from '../models'
 import { Controller, Post } from 'koa-router-ts'
 import Facebook = require('facebook-node-sdk')
-const TelegramLogin = require('node-telegram-login');
-const Login = new TelegramLogin(process.env.TELEGRAM_LOGIN_TOKEN);
+const TelegramLogin = require('node-telegram-login')
+const Login = new TelegramLogin(process.env.TELEGRAM_LOGIN_TOKEN)
 
 @Controller('/login')
 export default class {
@@ -29,10 +30,28 @@ export default class {
     }
 
     const user = await getOrCreateUser({
-      name: `${data.first_name}${data.last_name ? ` ${data.last_name}` : ''}`, 
+      name: `${data.first_name}${data.last_name ? ` ${data.last_name}` : ''}`,
       telegramId: data.id,
     })
     ctx.body = user.strippedAndFilled(true)
+  }
+
+  @Post('/google')
+  async google(ctx: Context) {
+    const accessToken = ctx.request.body.accessToken
+
+    const userData = await axios(
+      `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${accessToken}`
+    )
+    console.log(userData)
+    ctx.throw(400)
+    // const user = await getOrCreateUser({
+    //   name: fbProfile.name,
+
+    //   email: fbProfile.email,
+    //   facebookId: fbProfile.id,
+    // })
+    // ctx.body = user.strippedAndFilled(true)
   }
 }
 
