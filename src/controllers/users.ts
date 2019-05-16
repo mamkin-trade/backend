@@ -28,6 +28,7 @@ export default class {
   @Post('/reset', authenticate)
   async reset(ctx: Context) {
     let user = ctx.state.user as InstanceType<User>
+    console.log(user)
     user.balance = { usd: 10000 }
     user.markModified('balance')
     user.orders = []
