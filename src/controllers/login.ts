@@ -40,18 +40,15 @@ export default class {
   async google(ctx: Context) {
     const accessToken = ctx.request.body.accessToken
 
-    const userData = await axios(
+    const userData: any = await axios(
       `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${accessToken}`
     )
-    console.log(userData)
-    ctx.throw(400)
-    // const user = await getOrCreateUser({
-    //   name: fbProfile.name,
+    const user = await getOrCreateUser({
+      name: userData.name,
 
-    //   email: fbProfile.email,
-    //   facebookId: fbProfile.id,
-    // })
-    // ctx.body = user.strippedAndFilled(true)
+      email: userData.email,
+    })
+    ctx.body = user.strippedAndFilled(true)
   }
 }
 
