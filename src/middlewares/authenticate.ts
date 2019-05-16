@@ -4,6 +4,7 @@ import { Context } from 'koa'
 import { verify } from '../helpers/jwt'
 import { errors } from '../helpers/errors'
 import { InstanceType } from 'typegoose'
+import { report } from '../helpers/report'
 
 export async function authenticate(ctx: Context, next: Function) {
   try {
@@ -22,6 +23,7 @@ export async function authenticate(ctx: Context, next: Function) {
     }
     ctx.state.user = user
   } catch (err) {
+    report(err)
     return ctx.throw(403, errors.authentication)
   }
   await next()
