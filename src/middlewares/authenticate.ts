@@ -14,6 +14,8 @@ export async function authenticate(ctx: Context, next: Function) {
       user = await UserModel.findOne({ email: payload.email })
     } else if (payload.facebookId) {
       user = await UserModel.findOne({ facebookId: payload.facebookId })
+    } else if (payload.telegramId) {
+      user = await UserModel.findOne({ telegramId: payload.telegramId })
     }
     if (!user) {
       return ctx.throw(403, errors.noUser)

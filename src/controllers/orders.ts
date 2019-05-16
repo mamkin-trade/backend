@@ -48,8 +48,10 @@ export default class {
         a._doc.createdAt > b._doc.createdAt ? -1 : 1
       )
     const count = orders.length
+    const skip = parseInt(ctx.request.query.skip || 0, 10)
+    const limit = parseInt(ctx.request.query.limit || 20, 10)
     const tempOrders = orders
-      .slice(ctx.request.body.skip || 0, ctx.request.body.limit || 20)
+      .slice(skip, skip + limit)
       .map((o: InstanceType<Order>) => o.stripped())
     ctx.body = { orders: tempOrders, count }
   }

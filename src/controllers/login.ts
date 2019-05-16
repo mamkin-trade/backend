@@ -3,6 +3,8 @@ import { Context } from 'koa'
 import { getOrCreateUser } from '../models'
 import { Controller, Post } from 'koa-router-ts'
 import Facebook = require('facebook-node-sdk')
+const TelegramLogin = require('node-telegram-login');
+const Login = new TelegramLogin(process.env.TELEGRAM_LOGIN_TOKEN);
 
 @Controller('/login')
 export default class {
@@ -14,6 +16,21 @@ export default class {
 
       email: fbProfile.email,
       facebookId: fbProfile.id,
+    })
+    ctx.body = user.strippedAndFilled(true)
+  }
+
+  @Post('/telegram')
+  async telegram(ctx: Context) {
+    const data = ctx.request.body
+    // verify the data
+    if (!Login.checkLoginData(data)) {
+      throw new Error()
+    }
+
+    const user = await getOrCreateUser({
+      name: `${data.first_name}${data.last_name ? ` ${data.last_name}` : ''}`, 
+      telegramId: data.id,
     })
     ctx.body = user.strippedAndFilled(true)
   }

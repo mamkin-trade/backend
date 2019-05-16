@@ -32,6 +32,9 @@ async function checkOrders() {
   // Filter only actionable
   activeOrders = activeOrders.filter(o => {
     const ticker = tickers[o.symbol]
+    if (!ticker) {
+      return false
+    }
     if (o.side === OrderSide.buy) {
       return ticker.ask <= o.price
     } else {
@@ -74,6 +77,7 @@ async function checkOrders() {
             await user.save()
             // Modify and save order
             freshOrder.completed = true
+            freshOrder.completionDate = new Date()
             await freshOrder.save()
           })
         } catch (err) {

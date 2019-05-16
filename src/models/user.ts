@@ -13,12 +13,14 @@ import { tickers } from '../helpers/bitfinex'
 import { Order, OrderSide } from './order'
 
 export class User extends Typegoose {
-  @prop({ index: true, unique: true, lowercase: true })
+  @prop({ index: true, lowercase: true })
   email?: string
-  @prop({ index: true, unique: true, lowercase: true })
+  @prop({ index: true, lowercase: true })
   facebookId?: string
+  @prop({ index: true, lowercase: true })
+  telegramId?: string
 
-  @prop({ required: true, index: true, unique: true })
+  @prop({ required: true, index: true })
   name: string
 
   @prop({ required: true, index: true, unique: true })
@@ -37,6 +39,7 @@ export class User extends Typegoose {
       stripFields.push('token')
       stripFields.push('email')
       stripFields.push('facebookId')
+      stripFields.push('telegramId')
     }
     this._doc.overallBalance = this.overallBalance
     for (const activeOrder of this.orders.filter(
@@ -62,6 +65,9 @@ export class User extends Typegoose {
         } else {
           const firstConversionRate = tickers[`${first.toUpperCase()}BTC`]
           const secondConversionRate = tickers['BTCUSD']
+          if (!firstConversionRate || !secondConversionRate) {
+            continue
+          }
           this._doc.overallBalance +=
             value * firstConversionRate.bid * secondConversionRate.bid
         }
@@ -85,6 +91,9 @@ export class User extends Typegoose {
       } else {
         const firstConversionRate = tickers[`${key.toUpperCase()}BTC`]
         const secondConversionRate = tickers['BTCUSD']
+        if (!firstConversionRate || !secondConversionRate) {
+          continue
+        }
         balance += value * firstConversionRate.bid * secondConversionRate.bid
       }
     }
@@ -102,6 +111,7 @@ export const UserModel = new User().getModelForClass(User, {
 interface LoginOptions {
   email?: string
   facebookId?: string
+  telegramId?: string
 
   name: string
 }
@@ -122,19 +132,32 @@ export async function getOrCreateUser(loginOptions: LoginOptions) {
       facebookId: loginOptions.facebookId,
     }).populate('orders')
   }
+  // Try telegram id
+  if (!user && loginOptions.telegramId) {
+    user = await UserModel.findOne({
+      telegramId: loginOptions.telegramId,
+    }).populate('orders')
+  }
   if (!user) {
     // Check if we have credentials
-    if (!(loginOptions.email || loginOptions.facebookId)) {
+    if (!(loginOptions.email || loginOptions.facebookId || loginOptions.telegramId)) {
       throw new Error()
     }
-    user = await new UserModel({
-      email: loginOptions.email,
-      facebookId: loginOptions.facebookId,
+    const params = {
       name: loginOptions.name,
-      token: await sign({
-        email: loginOptions.email,
-        facebookId: loginOptions.facebookId,
-      }),
+    } as any
+    if (loginOptions.email) {
+      params.email = loginOptions.email
+    }
+    if (loginOptions.facebookId) {
+      params.facebookId = loginOptions.facebookId
+    }
+    if (loginOptions.telegramId) {
+      params.telegramId = loginOptions.telegramId
+    }
+    user = await new UserModel({
+      ...params,
+      token: await sign(params),
     }).save()
   }
   return user
