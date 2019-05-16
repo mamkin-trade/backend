@@ -27,7 +27,7 @@ export async function report(err: Error) {
         return
       }
     }
-    bot.telegram.sendMessage(process.env.TELEGRAM_ADMIN, text, {
+    await bot.telegram.sendMessage(process.env.TELEGRAM_ADMIN, text, {
       parse_mode: 'HTML',
     })
   } catch (error) {
