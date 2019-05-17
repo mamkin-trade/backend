@@ -18,6 +18,8 @@ import { Big } from 'big.js'
 import { precision } from '../helpers/precision'
 import { minimumOrderSize, maximumOrderSize } from '../helpers/orderSize'
 
+const baseFee = 0.002
+
 @Controller('/orders')
 export default class {
   @Get('/user/:id')
@@ -86,7 +88,8 @@ export default class {
   async postOrder(ctx: Context) {
     // Destruct params
     const { symbol, side, type } = ctx.request.body
-    const amount = Number(ctx.request.body.amount) || 0
+    const amount = new Big(ctx.request.body.amount || 0)
+    const fee = amount.mul(baseFee)
     let price = new Big(ctx.request.body.price || 0)
     // Split symbol
     const firstCurrency = symbol.substr(0, 3)
@@ -116,27 +119,27 @@ export default class {
       return ctx.throw(400)
     }
     // Check amount
-    const bigAmount = new Big(amount)
-    if (bigAmount.lte(0)) {
+    if (amount.lte(0)) {
       return ctx.throw(400)
     }
-    if (bigAmount.lt(minimumOrderSize(symbol))) {
+    if (amount.lt(minimumOrderSize(symbol))) {
       return ctx.throw(400)
     }
-    if (bigAmount.gt(maximumOrderSize(symbol))) {
+    if (amount.gt(maximumOrderSize(symbol))) {
       return ctx.throw(400)
     }
     // Create order
     const isTypeMarket = type === OrderType.market
     let order = new OrderModel({
       symbol,
-      amount,
+      amount: Number(amount),
       side,
       type,
       completed: isTypeMarket,
-      price,
+      price: Number(price),
       user: ctx.state.user,
-      heldAmount: side === OrderSide.buy ? Number(price.mul(amount)) : amount,
+      heldAmount: Number(side === OrderSide.buy ? price.mul(amount) : amount),
+      fee: Number(fee),
     })
     // Check if user can afford this order and add or execute it
     let user = ctx.state.user as InstanceType<User>
@@ -158,13 +161,15 @@ export default class {
       if (side === OrderSide.buy) {
         user.balance[second] = user.balance[second] - order.heldAmount
         if (type === OrderType.market) {
-          user.balance[first] = (user.balance[first] || 0) + amount
+          user.balance[first] = Number(
+            amount.minus(fee).add(user.balance[first] || 0)
+          )
         }
       } else {
         user.balance[first] = user.balance[first] - order.heldAmount
         if (type === OrderType.market) {
           user.balance[second] = Number(
-            price.mul(amount).add(user.balance[second] || 0)
+            price.mul(amount.minus(fee)).add(user.balance[second] || 0)
           )
         }
       }

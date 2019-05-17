@@ -7,6 +7,7 @@ import { report } from './report'
 import { Big } from 'big.js'
 
 let checking = false
+const baseFee = 0.002
 
 export function startCheckingOrders() {
   checkOrders()
@@ -55,6 +56,9 @@ async function checkOrders() {
             if (freshOrder.completed || freshOrder.cancelled) {
               return
             }
+            // Get big amount
+            const amount = new Big(freshOrder.amount)
+            const fee = amount.mul(baseFee)
             // Get fresh user
             user = await UserModel.findOne({ _id: user._id })
             // Destruct symbols
@@ -63,13 +67,14 @@ async function checkOrders() {
             // Modify user
             if (freshOrder.side === OrderSide.buy) {
               user.balance[first] = Number(
-                new Big(user.balance[first] || 0).add(freshOrder.amount)
+                amount.minus(fee).add(user.balance[first] || 0)
               )
             } else {
               user.balance[second] = Number(
-                new Big(user.balance[second] || 0).add(
-                  new Big(freshOrder.amount).mul(freshOrder.price)
-                )
+                amount
+                  .minus(fee)
+                  .mul(freshOrder.price)
+                  .add(user.balance[second] || 0)
               )
             }
             user.markModified('balance')

@@ -172,4 +172,5 @@ Cancels [Order](#order).
 | completed      | boolean          | Whether order is fullfilled                          |
 | cancelled      | boolean          | Whether order is cancelled                           |
 | createdAt      | Date             | When order was created                               |
+| fee            | number           | Amount paid as a fee                                 |
 | completionDate | Date             | _Optional._ When the order was completed             |
