@@ -15,7 +15,7 @@ import { executeLocked } from '../helpers/locker'
 import { InstanceType } from 'typegoose'
 import { errors } from '../helpers/errors'
 import { Big } from 'big.js'
-import { precision } from '../helpers/precision'
+import { precision, round } from '../helpers/precision'
 import { minimumOrderSize, maximumOrderSize } from '../helpers/orderSize'
 
 const baseFee = 0.002
@@ -159,17 +159,23 @@ export default class {
       }
       // Execute
       if (side === OrderSide.buy) {
-        user.balance[second] = user.balance[second] - order.heldAmount
+        user.balance[second] = round(user.balance[second] - order.heldAmount, {
+          currency: second,
+        })
         if (type === OrderType.market) {
-          user.balance[first] = Number(
-            amount.minus(fee).add(user.balance[first] || 0)
+          user.balance[first] = round(
+            amount.minus(fee).add(user.balance[first] || 0),
+            { currency: first }
           )
         }
       } else {
-        user.balance[first] = user.balance[first] - order.heldAmount
+        user.balance[first] = round(user.balance[first] - order.heldAmount, {
+          currency: first,
+        })
         if (type === OrderType.market) {
-          user.balance[second] = Number(
-            price.mul(amount.minus(fee)).add(user.balance[second] || 0)
+          user.balance[second] = round(
+            price.mul(amount.minus(fee)).add(user.balance[second] || 0),
+            { currency: second }
           )
         }
       }
@@ -219,8 +225,10 @@ export default class {
       const first = order.symbol.substr(0, 3).toLowerCase()
       const second = order.symbol.substr(3, 3).toLowerCase()
       const incrementField = order.side === OrderSide.buy ? second : first
-      user.balance[incrementField] =
-        user.balance[incrementField] + order.heldAmount
+      user.balance[incrementField] = round(
+        user.balance[incrementField] + order.heldAmount,
+        { currency: incrementField }
+      )
       user.markModified('balance')
       // Save user
       await user.save()

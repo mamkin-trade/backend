@@ -5,6 +5,7 @@ import { executeLocked } from './locker'
 import { InstanceType } from 'typegoose'
 import { report } from './report'
 import { Big } from 'big.js'
+import { round } from './precision'
 
 let checking = false
 const baseFee = 0.002
@@ -66,15 +67,17 @@ async function checkOrders() {
             const second = freshOrder.symbol.substr(3, 3).toLowerCase()
             // Modify user
             if (freshOrder.side === OrderSide.buy) {
-              user.balance[first] = Number(
-                amount.minus(fee).add(user.balance[first] || 0)
+              user.balance[first] = round(
+                amount.minus(fee).add(user.balance[first] || 0),
+                { currency: first }
               )
             } else {
-              user.balance[second] = Number(
+              user.balance[second] = round(
                 amount
                   .minus(fee)
                   .mul(freshOrder.price)
-                  .add(user.balance[second] || 0)
+                  .add(user.balance[second] || 0),
+                { currency: second }
               )
             }
             user.markModified('balance')
