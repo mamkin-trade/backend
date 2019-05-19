@@ -8,7 +8,7 @@ import { Big } from 'big.js'
 import { round } from './precision'
 
 let checking = false
-const baseFee = 0.002
+const baseFee = 0.001
 
 export function startCheckingOrders() {
   checkOrders()
