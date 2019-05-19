@@ -29,7 +29,7 @@ export default class {
       'orders'
     )
     if (!user) {
-      return ctx.throw(404, errors.noUser)
+      return ctx.throw(404, JSON.stringify(errors.noUser))
     }
     let orders = user.orders
       .filter((o: Order) => {
@@ -65,7 +65,7 @@ export default class {
       'orders'
     )
     if (!user) {
-      return ctx.throw(404, errors.noUser)
+      return ctx.throw(404, JSON.stringify(errors.noUser))
     }
     const orders = user.orders.filter((o: Order) => {
       let valid = true
@@ -104,7 +104,7 @@ export default class {
     }
     // Check price
     if (price.lte(0)) {
-      return ctx.throw(400, errors.priceLessThanZero)
+      return ctx.throw(400, JSON.stringify(errors.priceLessThanZero))
     }
     if (
       price.lt(
@@ -113,20 +113,20 @@ export default class {
         )
       )
     ) {
-      return ctx.throw(400, errors.priceLessThanMinimum)
+      return ctx.throw(400, JSON.stringify(errors.priceLessThanMinimum))
     }
     if (price.gt(100000000)) {
-      return ctx.throw(400, errors.priceMoreThanMaximum)
+      return ctx.throw(400, JSON.stringify(errors.priceMoreThanMaximum))
     }
     // Check amount
     if (amount.lte(0)) {
-      return ctx.throw(400, errors.amountLessThanZero)
+      return ctx.throw(400, JSON.stringify(errors.amountLessThanZero))
     }
     if (amount.lt(minimumOrderSize(symbol))) {
-      return ctx.throw(400, errors.amountLessThanMinimumOrder)
+      return ctx.throw(400, JSON.stringify(errors.amountLessThanMinimumOrder))
     }
     if (amount.gt(maximumOrderSize(symbol))) {
-      return ctx.throw(400, errors.amountMoreThanMaximumOrder)
+      return ctx.throw(400, JSON.stringify(errors.amountMoreThanMaximumOrder))
     }
     // Create order
     const isTypeMarket = type === OrderType.market
@@ -155,7 +155,7 @@ export default class {
           (user.balance[second] || 0) < Number(price.mul(amount))) ||
         (order.side === OrderSide.sell && (user.balance[first] || 0) < amount)
       ) {
-        return ctx.throw(403, errors.insufficientFunds)
+        return ctx.throw(403, JSON.stringify(errors.insufficientFunds))
       }
       // Execute
       if (side === OrderSide.buy) {
@@ -203,13 +203,13 @@ export default class {
       !order ||
       (order.user as InstanceType<User>)._id.toString() !== ctx.state.user.id
     ) {
-      return ctx.throw(404, errors.orderNotFound)
+      return ctx.throw(404, JSON.stringify(errors.orderNotFound))
     }
     if (order.completed) {
-      return ctx.throw(403, errors.orderCompleted)
+      return ctx.throw(403, JSON.stringify(errors.orderCompleted))
     }
     if (order.cancelled) {
-      return ctx.throw(403, errors.orderCancelled)
+      return ctx.throw(403, JSON.stringify(errors.orderCancelled))
     }
     // Cancel order
     await executeLocked(user.id, async () => {

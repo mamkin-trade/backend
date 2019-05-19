@@ -20,7 +20,7 @@ export default class {
       'orders'
     )
     if (!user) {
-      return ctx.throw(404, errors.noUser)
+      return ctx.throw(404, JSON.stringify(errors.noUser))
     }
     ctx.body = user.strippedAndFilled()
   }
