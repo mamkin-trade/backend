@@ -104,7 +104,7 @@ export default class {
     }
     // Check price
     if (price.lte(0)) {
-      return ctx.throw(400)
+      return ctx.throw(400, errors.priceLessThanZero)
     }
     if (
       price.lt(
@@ -113,20 +113,20 @@ export default class {
         )
       )
     ) {
-      return ctx.throw(400)
+      return ctx.throw(400, errors.priceLessThanMinimum)
     }
     if (price.gt(100000000)) {
-      return ctx.throw(400)
+      return ctx.throw(400, errors.priceMoreThanMaximum)
     }
     // Check amount
     if (amount.lte(0)) {
-      return ctx.throw(400)
+      return ctx.throw(400, errors.amountLessThanZero)
     }
     if (amount.lt(minimumOrderSize(symbol))) {
-      return ctx.throw(400)
+      return ctx.throw(400, errors.amountLessThanMinimumOrder)
     }
     if (amount.gt(maximumOrderSize(symbol))) {
-      return ctx.throw(400)
+      return ctx.throw(400, errors.amountMoreThanMaximumOrder)
     }
     // Create order
     const isTypeMarket = type === OrderType.market
