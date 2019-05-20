@@ -32,7 +32,7 @@ export class User extends Typegoose {
   @arrayProp({ required: true, itemsRef: Order, default: [] })
   orders: Ref<Order>[]
 
-  @arrayProp({ required: true, default: [] })
+  @arrayProp({ required: true, items: Number, default: [] })
   subscribers: number[]
 
   @instanceMethod
