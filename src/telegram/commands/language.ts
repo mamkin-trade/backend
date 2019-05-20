@@ -37,7 +37,7 @@ function languageKeyboard() {
   locales.forEach((locale, index) => {
     const localeCode = locale.split('.')[0]
     const localeName = safeLoad(
-      readFileSync(`${__dirname}/../../../../locales/${locale}`, 'utf8')
+      readFileSync(`${__dirname}/../../../locales/${locale}`, 'utf8')
     ).name
     if (index % 2 == 0) {
       if (index === 0) {
@@ -56,5 +56,5 @@ function languageKeyboard() {
 }
 
 function localesFiles() {
-  return readdirSync(`${__dirname}/../../../../locales`)
+  return readdirSync(`${__dirname}/../../../locales`)
 }

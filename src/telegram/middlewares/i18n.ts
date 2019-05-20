@@ -4,7 +4,7 @@ import Telegraf, { ContextMessageUpdate } from 'telegraf'
 const dirtyI18N = require('telegraf-i18n')
 
 const i18n = new dirtyI18N({
-  directory: `${__dirname}/../../../../locales`,
+  directory: `${__dirname}/../../../locales`,
   defaultLanguage: 'en',
   sessionName: 'session',
   useSession: false,
