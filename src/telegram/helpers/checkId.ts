@@ -32,7 +32,6 @@ export function attachUser(command: string) {
       ctx.dbuser = user
       next()
     } catch (err) {
-      console.error(err)
       try {
         await ctx.reply(ctx.i18n.t('no_user', { id }), {
           reply_to_message_id: msg.message_id,
