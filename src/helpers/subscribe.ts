@@ -48,29 +48,29 @@ export async function notify(order: Order) {
     const user = order.user as InstanceType<User>
     let text = ''
     if (order.type === 'market') {
-      text = `<a href="https://mamkin.trade/user/${user.id}>${
+      text = `<a href="https://mamkin.trade/user/${user.id}">${
         user.name
       }</a>\nExecuted ${order.type} - ${order.symbol} - ${order.side} - ${
         order.price
-      } - ${order.amount}"`
+      } - ${order.amount}`
     } else if (order.cancelled) {
-      text = `<a href="https://mamkin.trade/user/${user.id}>${
+      text = `<a href="https://mamkin.trade/user/${user.id}">${
         user.name
       }</a>\nCancelled ${order.type} - ${order.symbol} - ${order.side} - ${
         order.price
-      } - ${order.amount}"`
+      } - ${order.amount}`
     } else if (order.completed) {
-      text = `<a href="https://mamkin.trade/user/${user.id}>${
+      text = `<a href="https://mamkin.trade/user/${user.id}">${
         user.name
       }</a>\nExecuted ${order.type} - ${order.symbol} - ${order.side} - ${
         order.price
-      } - ${order.amount}"`
+      } - ${order.amount}`
     } else {
-      text = `<a href="https://mamkin.trade/user/${user.id}>${
+      text = `<a href="https://mamkin.trade/user/${user.id}">${
         user.name
       }</a>\nCreated ${order.type} - ${order.symbol} - ${order.side} - ${
         order.price
-      } - ${order.amount}"`
+      } - ${order.amount}`
     }
     for (const subscriberId of user.subscribers) {
       try {
