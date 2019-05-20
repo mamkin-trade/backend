@@ -1,7 +1,10 @@
-/// Dependencies
+// Dependencies
+import { bot } from './telegram'
 import { User, UserModel } from '../models/user'
-import { InstanceType } from 'typegoose'
 import { executeLocked } from './locker'
+import { Order } from '../models/order'
+import { InstanceType } from 'typegoose'
+import { report } from './report'
 
 export async function subscribe(telegramId: number, user: InstanceType<User>) {
   await executeLocked(user.id, async () => {
@@ -37,5 +40,49 @@ export async function unsubscribeAll(telegramId: number) {
   const users = await UserModel.find({ subscribers: telegramId })
   for (const user of users) {
     await unsubscribe(telegramId, user)
+  }
+}
+
+export async function notify(order: Order) {
+  try {
+    const user = order.user as InstanceType<User>
+    let text = ''
+    if (order.type === 'market') {
+      text = `<a href="https://mamkin.trade/user/${user.id}>${
+        user.name
+      }</a>\nExecuted ${order.type} - ${order.symbol} - ${order.side} - ${
+        order.price
+      } - ${order.amount}"`
+    } else if (order.cancelled) {
+      text = `<a href="https://mamkin.trade/user/${user.id}>${
+        user.name
+      }</a>\nCancelled ${order.type} - ${order.symbol} - ${order.side} - ${
+        order.price
+      } - ${order.amount}"`
+    } else if (order.completed) {
+      text = `<a href="https://mamkin.trade/user/${user.id}>${
+        user.name
+      }</a>\nExecuted ${order.type} - ${order.symbol} - ${order.side} - ${
+        order.price
+      } - ${order.amount}"`
+    } else {
+      text = `<a href="https://mamkin.trade/user/${user.id}>${
+        user.name
+      }</a>\nCreated ${order.type} - ${order.symbol} - ${order.side} - ${
+        order.price
+      } - ${order.amount}"`
+    }
+    for (const subscriberId of user.subscribers) {
+      try {
+        await bot.telegram.sendMessage(subscriberId, text, {
+          disable_web_page_preview: true,
+          parse_mode: 'HTML',
+        })
+      } catch (err) {
+        await report(err)
+      }
+    }
+  } catch (err) {
+    await report(err)
   }
 }

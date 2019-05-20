@@ -17,6 +17,7 @@ import { errors } from '../helpers/errors'
 import { Big } from 'big.js'
 import { precision, round } from '../helpers/precision'
 import { minimumOrderSize, maximumOrderSize } from '../helpers/orderSize'
+import { notify } from '../helpers/subscribe'
 
 const baseFee = 0.002
 
@@ -189,6 +190,8 @@ export default class {
       user = await user.save()
       // Return ok
       ctx.body = order.stripped()
+      // Report
+      notify(order)
     })
   }
 

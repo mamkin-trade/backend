@@ -6,6 +6,7 @@ import { InstanceType } from 'typegoose'
 import { report } from './report'
 import { Big } from 'big.js'
 import { round } from './precision'
+import { notify } from './subscribe'
 
 let checking = false
 const baseFee = 0.001
@@ -52,7 +53,9 @@ async function checkOrders() {
           let user = order.user as InstanceType<User>
           await executeLocked(user.id, async () => {
             // Get frsh order
-            const freshOrder = await OrderModel.findOne({ _id: order.id })
+            const freshOrder = await OrderModel.findOne({
+              _id: order.id,
+            }).populate('user')
             // Check if order is still ok
             if (freshOrder.completed || freshOrder.cancelled) {
               return
@@ -87,6 +90,8 @@ async function checkOrders() {
             freshOrder.completed = true
             freshOrder.completionDate = new Date()
             await freshOrder.save()
+            // Notify
+            notify(freshOrder)
           })
         } catch (err) {
           await report(err)
