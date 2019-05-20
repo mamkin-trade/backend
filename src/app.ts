@@ -8,6 +8,7 @@ import bodyParser from 'koa-bodyparser-ts'
 import { loadControllers } from 'koa-router-ts'
 import * as cors from '@koa/cors'
 import { startCheckingOrders } from './helpers/orderExecutor'
+import './helpers/telegram'
 
 const app = new Koa()
 const router = loadControllers(`${__dirname}/controllers`, { recurse: true })
