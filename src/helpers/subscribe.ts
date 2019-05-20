@@ -29,8 +29,8 @@ export async function unsubscribe(
   })
 }
 
-export async function subscriptions(telegramId: number) {
-  return (await UserModel.find({ subscribers: telegramId })).map(u => u.id)
+export function subscriptions(telegramId: number) {
+  return UserModel.find({ subscribers: telegramId })
 }
 
 export async function unsubscribeAll(telegramId: number) {

@@ -69,8 +69,11 @@ bot.command('subscriptions', async ctx => {
     return ctx.reply('No subscriptions yet.')
   }
   let text = 'Subscriptions:\n'
+  let i = 1
   for (const sub of subs) {
-    text = `${text}\n<a href="https://mamkin.trade/user/${sub}">${sub}</a>`
+    text = `${text}\n${i++}. <a href="https://mamkin.trade/user/${sub.id}">${
+      sub.name
+    }</a>`
   }
   await ctx.replyWithHTML(text, { disable_web_page_preview: true })
 })
