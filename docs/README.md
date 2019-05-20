@@ -104,13 +104,13 @@ Creates [Order](#order).
 
 #### Parameters
 
-| field  | type             | Required | description                                          |
-| ------ | ---------------- | -------- | ---------------------------------------------------- |
-| symbol | string           | Yes      | Symbol such as "BTCUSD"                              |
-| amount | number \| string | Yes      | Amount of the order                                  |
-| side   | string           | Yes      | Side of the order, can be either "buy" or "sell"     |
-| type   | string           | Yes      | Type of the order, can be either "market" or "limit" |
-| price  | number \| string | Optional | Price of the order, not available for "market" type  |
+| field  | type             | Required | description                                                  |
+| ------ | ---------------- | -------- | ------------------------------------------------------------ |
+| symbol | string           | Yes      | Symbol such as "BTCUSD"                                      |
+| amount | number \| string | Yes      | Amount of the order                                          |
+| side   | string           | Yes      | Side of the order, can be either "buy" or "sell"             |
+| type   | string           | Yes      | Type of the order, can be either "market", "stop" or "limit" |
+| price  | number \| string | Optional | Price of the order, not available for "market" type          |
 
 ### DELETE `/order/:id`
 
@@ -161,16 +161,16 @@ Cancels [Order](#order).
 
 ### Order
 
-| field          | type             | description                                          |
-| -------------- | ---------------- | ---------------------------------------------------- |
-| \_id           | string           | Database ID                                          |
-| symbol         | string           | Name of the symbol                                   |
-| amount         | number \| string | Amount of currency in the order                      |
-| price          | number \| string | Price of the order                                   |
-| side           | string           | Side of the order, can be either "buy" or "sell"     |
-| type           | string           | Type of the order, can be either "market" or "limit" |
-| completed      | boolean          | Whether order is fullfilled                          |
-| cancelled      | boolean          | Whether order is cancelled                           |
-| createdAt      | Date             | When order was created                               |
-| fee            | number           | Amount paid as a fee                                 |
-| completionDate | Date             | _Optional._ When the order was completed             |
+| field          | type             | description                                                  |
+| -------------- | ---------------- | ------------------------------------------------------------ |
+| \_id           | string           | Database ID                                                  |
+| symbol         | string           | Name of the symbol                                           |
+| amount         | number \| string | Amount of currency in the order                              |
+| price          | number \| string | Price of the order                                           |
+| side           | string           | Side of the order, can be either "buy" or "sell"             |
+| type           | string           | Type of the order, can be either "market", "stop" or "limit" |
+| completed      | boolean          | Whether order is fullfilled                                  |
+| cancelled      | boolean          | Whether order is cancelled                                   |
+| createdAt      | Date             | When order was created                                       |
+| fee            | number           | Amount paid as a fee                                         |
+| completionDate | Date             | _Optional._ When the order was completed                     |

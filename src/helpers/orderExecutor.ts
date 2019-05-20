@@ -38,10 +38,19 @@ async function checkOrders() {
     if (!ticker) {
       return false
     }
-    if (o.side === OrderSide.buy) {
-      return ticker.ask <= o.price
+    if (o.type === 'limit') {
+      if (o.side === OrderSide.buy) {
+        return ticker.ask <= o.price
+      } else {
+        return ticker.bid >= o.price
+      }
     } else {
-      return ticker.bid >= o.price
+      // stop orders
+      if (o.side === OrderSide.buy) {
+        return ticker.ask >= o.price
+      } else {
+        return ticker.bid <= o.price
+      }
     }
   })
   // Execute actionable orders

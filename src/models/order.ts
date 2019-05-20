@@ -11,6 +11,7 @@ export enum OrderSide {
 export enum OrderType {
   market = 'market',
   limit = 'limit',
+  stop = 'stop',
 }
 
 export class Order extends Typegoose {
