@@ -24,7 +24,7 @@ bot.start(async ctx => {
   const msg = ctx.message || ctx.channelPost
   const id = msg.text.substr(7)
   if (!msg || !msg.text || !id) {
-    return ctx.reply(helpMessage)
+    return ctx.replyWithHTML(helpMessage)
   }
   const user = await UserModel.findById(id)
   if (!user) {
@@ -37,7 +37,7 @@ bot.command('subscribe', async ctx => {
   const msg = ctx.message || ctx.channelPost
   const id = msg.text.substr(11)
   if (!msg || !msg.text || !id) {
-    return ctx.reply(helpMessage)
+    return ctx.replyWithHTML(helpMessage)
   }
   const user = await UserModel.findById(id)
   if (!user) {
@@ -50,7 +50,7 @@ bot.command('unsubscribe', async ctx => {
   const msg = ctx.message || ctx.channelPost
   const id = msg.text.substr(13)
   if (!msg || !msg.text || !id) {
-    return ctx.reply(helpMessage)
+    return ctx.replyWithHTML(helpMessage)
   }
   const user = await UserModel.findById(id)
   if (!user) {
