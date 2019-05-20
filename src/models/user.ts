@@ -37,6 +37,7 @@ export class User extends Typegoose {
 
   @instanceMethod
   strippedAndFilled(withToken = false) {
+    this._doc.subCount = this.subscribers.length
     const stripFields = [
       'createdAt',
       'updatedAt',
