@@ -50,25 +50,25 @@ export async function notify(order: Order) {
     if (order.type === 'market') {
       text = `<a href="https://mamkin.trade/user/${user.id}">${
         user.name
-      }</a>\nExecuted ${order.type} - ${order.symbol} - ${order.side} - ${
+      }</a>\nExecuted: ${order.type} - ${order.symbol} - ${order.side} - ${
         order.price
       } - ${order.amount}`
     } else if (order.cancelled) {
       text = `<a href="https://mamkin.trade/user/${user.id}">${
         user.name
-      }</a>\nCancelled ${order.type} - ${order.symbol} - ${order.side} - ${
+      }</a>\nCancelled: ${order.type} - ${order.symbol} - ${order.side} - ${
         order.price
       } - ${order.amount}`
     } else if (order.completed) {
       text = `<a href="https://mamkin.trade/user/${user.id}">${
         user.name
-      }</a>\nExecuted ${order.type} - ${order.symbol} - ${order.side} - ${
+      }</a>\nExecuted: ${order.type} - ${order.symbol} - ${order.side} - ${
         order.price
       } - ${order.amount}`
     } else {
       text = `<a href="https://mamkin.trade/user/${user.id}">${
         user.name
-      }</a>\nCreated ${order.type} - ${order.symbol} - ${order.side} - ${
+      }</a>\nCreated: ${order.type} - ${order.symbol} - ${order.side} - ${
         order.price
       } - ${order.amount}`
     }
