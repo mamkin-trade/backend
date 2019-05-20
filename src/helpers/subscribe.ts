@@ -1,5 +1,5 @@
 // Dependencies
-import { bot } from './telegram'
+import { bot } from '../telegram'
 import { User, UserModel } from '../models/user'
 import { executeLocked } from './locker'
 import { Order } from '../models/order'
