@@ -13,7 +13,7 @@ export const bot = new Telegraf(process.env.TELEGRAM_LOGIN_TOKEN, {
 } as any)
 
 const helpMessage =
-  'Hi there! Please, use this bot to login to mamkin.trade and to subscribe to user\'s orders by sending message like <code>/sub 5cdaee8e90284b6080988ea1</code>. You can also unsubscribe by sending message like <code>/unsubscribe 5cdaee8e90284b6080988ea1</code> or /unsubscribeAll to unsubscribe from all users. Use /subscriptions to view the current list of subscriptions. Forward any questions to our <a href="https://t.me/joinchat/BIlEBxNgY3QDF3bzmigJsQ">trading group</a>. Thank you!'
+  'Hi there! Please, use this bot to login to mamkin.trade and to subscribe to user\'s orders by sending message like <code>/sub 5cdaee8e90284b6080988ea1</code>. You can also unsubscribe by sending message like <code>/unsubscribe 5cdaee8e90284b6080988ea1</code> or /unsubscribeAll to unsubscribe from all users. Use /subscriptions to view the current list of subscriptions.\n\nForward any questions to our <a href="https://t.me/joinchat/BIlEBxNgY3QDF3bzmigJsQ">trading group</a>. Thank you!'
 
 bot.help(async ctx => {
   await ctx.replyWithHTML(helpMessage, {
@@ -22,10 +22,10 @@ bot.help(async ctx => {
 })
 bot.start(async ctx => {
   const msg = ctx.message || ctx.channelPost
-  if (!msg || !msg.text) {
-    return
-  }
   const id = msg.text.substr(7)
+  if (!msg || !msg.text || !id) {
+    return ctx.reply(helpMessage)
+  }
   const user = await UserModel.findById(id)
   if (!user) {
     return ctx.reply(`No user found with id ${id}`)
@@ -35,10 +35,10 @@ bot.start(async ctx => {
 })
 bot.command('subscribe', async ctx => {
   const msg = ctx.message || ctx.channelPost
-  if (!msg || !msg.text) {
-    return
-  }
   const id = msg.text.substr(11)
+  if (!msg || !msg.text || !id) {
+    return ctx.reply(helpMessage)
+  }
   const user = await UserModel.findById(id)
   if (!user) {
     return ctx.reply(`No user found with id ${id}`)
@@ -48,10 +48,10 @@ bot.command('subscribe', async ctx => {
 })
 bot.command('unsubscribe', async ctx => {
   const msg = ctx.message || ctx.channelPost
-  if (!msg || !msg.text) {
-    return
-  }
   const id = msg.text.substr(13)
+  if (!msg || !msg.text || !id) {
+    return ctx.reply(helpMessage)
+  }
   const user = await UserModel.findById(id)
   if (!user) {
     return ctx.reply(`No user found with id ${id}`)
