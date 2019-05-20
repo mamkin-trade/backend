@@ -1,5 +1,5 @@
 // Dependencies
-import { findChat } from '../../models/Chat'
+import { findChat } from '../../models/chat'
 import { ContextMessageUpdate } from 'telegraf'
 
 export async function attachChat(ctx: ContextMessageUpdate, next) {
