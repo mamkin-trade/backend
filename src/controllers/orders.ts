@@ -239,6 +239,8 @@ export default class {
       await order.save()
       // Return ok
       ctx.body = order.stripped()
+      // Notify
+      notify(order)
     })
   }
 }
