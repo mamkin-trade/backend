@@ -78,19 +78,44 @@ async function checkOrders() {
             const first = freshOrder.symbol.substr(0, 3).toLowerCase()
             const second = freshOrder.symbol.substr(3, 3).toLowerCase()
             // Modify user
-            if (freshOrder.side === OrderSide.buy) {
-              user.balance[first] = round(
-                amount.minus(fee).add(user.balance[first] || 0),
-                { currency: first }
-              )
+            if (freshOrder.type === 'limit') {
+              if (freshOrder.side === OrderSide.buy) {
+                user.balance[first] = round(
+                  amount.minus(fee).add(user.balance[first] || 0),
+                  { currency: first }
+                )
+              } else {
+                user.balance[second] = round(
+                  amount
+                    .minus(fee)
+                    .mul(freshOrder.price)
+                    .add(user.balance[second] || 0),
+                  { currency: second }
+                )
+              }
             } else {
-              user.balance[second] = round(
-                amount
-                  .minus(fee)
-                  .mul(freshOrder.price)
-                  .add(user.balance[second] || 0),
-                { currency: second }
-              )
+              const ticker = tickers[order.symbol]
+              if (!ticker) {
+                return
+              }
+              if (freshOrder.side === OrderSide.buy) {
+                user.balance[first] = round(
+                  new Big(freshOrder.heldAmount)
+                    .div(ticker.ask)
+                    .minus(fee)
+                    .add(user.balance[first] || 0),
+                  { currency: first }
+                )
+              } else {
+                user.balance[second] = round(
+                  new Big(freshOrder.heldAmount)
+                    .mul(ticker.bid)
+                    .minus(fee)
+                    .mul(freshOrder.price)
+                    .add(user.balance[second] || 0),
+                  { currency: second }
+                )
+              }
             }
             user.markModified('balance')
             // Save user
