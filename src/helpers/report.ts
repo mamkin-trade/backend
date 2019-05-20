@@ -16,7 +16,12 @@ export async function tryReport<T>(fun: (() => T) | Promise<T>) {
 export async function report(err: Error) {
   const dismissableErrors = ['unexpected server response (429)', 'ECONNRESET']
   try {
-    let text = `MT Error:\n<code>${err.message || JSON.stringify(err)}</code>`
+    let text = `MT Error:\n<code>${err.message
+      .replace('<', '{{')
+      .replace('>', '}}') ||
+      JSON.stringify(err)
+        .replace('<', '{{')
+        .replace('>', '}}')}</code>`
     if (err.stack) {
       text = `${text}\n\n<code>${err.stack
         .replace('<', '{{')
