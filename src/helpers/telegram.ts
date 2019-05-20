@@ -28,7 +28,7 @@ bot.start(async ctx => {
   }
   const user = await UserModel.findById(id)
   if (!user) {
-    return ctx.reply(`No user found with id ${id}`)
+    return ctx.reply(`No user found with id ${id}.`)
   }
   await subscribe(ctx.chat.id, user)
   await ctx.reply('All done!')
@@ -41,7 +41,7 @@ bot.command('subscribe', async ctx => {
   }
   const user = await UserModel.findById(id)
   if (!user) {
-    return ctx.reply(`No user found with id ${id}`)
+    return ctx.reply(`No user found with id ${id}.`)
   }
   await subscribe(ctx.chat.id, user)
   await ctx.reply('All done!')
@@ -54,7 +54,7 @@ bot.command('unsubscribe', async ctx => {
   }
   const user = await UserModel.findById(id)
   if (!user) {
-    return ctx.reply(`No user found with id ${id}`)
+    return ctx.reply(`No user found with id ${id}.`)
   }
   await unsubscribe(ctx.chat.id, user)
   await ctx.reply('All done!')
@@ -66,7 +66,7 @@ bot.command('unsubscribeAll', async ctx => {
 bot.command('subscriptions', async ctx => {
   const subs = await subscriptions(ctx.chat.id)
   if (!subs.length) {
-    return ctx.reply('No subscriptions yet')
+    return ctx.reply('No subscriptions yet.')
   }
   let text = 'Subscriptions:\n'
   for (const sub of subs) {
