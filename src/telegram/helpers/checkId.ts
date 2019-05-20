@@ -17,8 +17,22 @@ export function attachUser(command: string) {
       }
     }
     // Check if user with this id exists
-    const user = await UserModel.findById(id)
-    if (!user) {
+    try {
+      const user = await UserModel.findById(id)
+      if (!user) {
+        try {
+          await ctx.reply(ctx.i18n.t('no_user', { id }), {
+            reply_to_message_id: msg.message_id,
+          })
+        } finally {
+          return undefined
+        }
+      }
+      // Attach user and continue
+      ctx.dbuser = user
+      next()
+    } catch (err) {
+      console.error(err)
       try {
         await ctx.reply(ctx.i18n.t('no_user', { id }), {
           reply_to_message_id: msg.message_id,
@@ -27,8 +41,5 @@ export function attachUser(command: string) {
         return undefined
       }
     }
-    // Attach user and continue
-    ctx.dbuser = user
-    next()
   }
 }
