@@ -32,6 +32,9 @@ export class User extends Typegoose {
   @arrayProp({ required: true, itemsRef: Order, default: [] })
   orders: Ref<Order>[]
 
+  @arrayProp({ required: true, default: [] })
+  subscribers: number[]
+
   @instanceMethod
   strippedAndFilled(withToken = false) {
     const stripFields = ['createdAt', 'updatedAt', '__v', 'orders']
@@ -140,7 +143,13 @@ export async function getOrCreateUser(loginOptions: LoginOptions) {
   }
   if (!user) {
     // Check if we have credentials
-    if (!(loginOptions.email || loginOptions.facebookId || loginOptions.telegramId)) {
+    if (
+      !(
+        loginOptions.email ||
+        loginOptions.facebookId ||
+        loginOptions.telegramId
+      )
+    ) {
       throw new Error()
     }
     const params = {

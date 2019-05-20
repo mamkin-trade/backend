@@ -3374,6 +3374,7 @@ tar@^4:
 telegraf@^3.29.0:
   version "3.29.0"
   resolved "https://registry.yarnpkg.com/telegraf/-/telegraf-3.29.0.tgz#0655d02b9a2d72d53ff20787947aa10ad54a747c"
+  integrity sha512-zvlY2Wnls7D/sJDTD21tORR9S1Exe6NThUCvYhdhCoKx7+OOZlplSd4yhSZbRI4bViuFdyhxCE+IuWS/ZmAElg==
   dependencies:
     "@types/node" "^11.12.1"
     debug "^4.0.1"
