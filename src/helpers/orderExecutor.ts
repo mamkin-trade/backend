@@ -109,9 +109,8 @@ async function checkOrders() {
               } else {
                 user.balance[second] = round(
                   new Big(freshOrder.heldAmount)
-                    .mul(ticker.bid)
                     .minus(fee)
-                    .mul(freshOrder.price)
+                    .mul(ticker.bid)
                     .add(user.balance[second] || 0),
                   { currency: second }
                 )
