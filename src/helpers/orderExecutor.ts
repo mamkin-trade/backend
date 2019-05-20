@@ -64,7 +64,7 @@ async function checkOrders() {
             // Get frsh order
             const freshOrder = await OrderModel.findOne({
               _id: order.id,
-            }).populate('user')
+            })
             // Check if order is still ok
             if (freshOrder.completed || freshOrder.cancelled) {
               return
