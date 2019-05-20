@@ -100,7 +100,7 @@ async function checkOrders() {
             freshOrder.completionDate = new Date()
             await freshOrder.save()
             // Notify
-            notify(freshOrder)
+            // notify(freshOrder)
           })
         } catch (err) {
           await report(err)

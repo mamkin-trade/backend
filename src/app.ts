@@ -21,6 +21,6 @@ app.use(router.allowedMethods())
 app.listen(1338)
 
 // Extra setup
-// startCheckingOrders()
+startCheckingOrders()
 
 console.log('Koa application is up and running on port 1338')
