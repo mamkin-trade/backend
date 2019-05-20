@@ -45,7 +45,10 @@ export async function unsubscribeAll(telegramId: number) {
 
 export async function notify(order: Order) {
   try {
-    const user = order.user as InstanceType<User>
+    let user = order.user as InstanceType<User>
+    if (!user || !user.id || !user.name) {
+      user = await UserModel.findOne({ _id: order.user })
+    }
     let text = ''
     if (order.type === 'market') {
       text = `<a href="https://mamkin.trade/user/${user.id}">${
