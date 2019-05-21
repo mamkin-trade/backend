@@ -68,6 +68,7 @@ export default class {
     const stringToVerify = `${process.env.VK_APP_ID}${id}${
       process.env.VK_SECRET
     }`
+    console.log('Checking', stringToVerify, md5(stringToVerify), hash)
     if (md5(stringToVerify) !== hash) {
       return ctx.throw(403)
     }
