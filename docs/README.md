@@ -44,6 +44,16 @@ Signs up with telegram, returns [User](#user).
 | -------- | ------ | -------- | -------------------------------- |
 | userData | object | Yes      | User data obatined from Telegram |
 
+### [Public] POST `/vk`
+
+Signs up with vk, returns [User](#user).
+
+#### Parameters
+
+| field    | type   | Required | description                                                                  |
+| -------- | ------ | -------- | ---------------------------------------------------------------------------- |
+| userData | object | Yes      | User data obatined from VK including first name, last name, user id and hash |
+
 ## `/users`
 
 ### [Public] GET `/leaderboard`

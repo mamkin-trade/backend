@@ -6,6 +6,7 @@ import { Controller, Post } from 'koa-router-ts'
 import Facebook = require('facebook-node-sdk')
 const TelegramLogin = require('node-telegram-login')
 const Login = new TelegramLogin(process.env.TELEGRAM_LOGIN_TOKEN)
+import * as md5 from 'md5'
 
 @Controller('/login')
 export default class {
@@ -26,7 +27,7 @@ export default class {
     const data = ctx.request.body
     // verify the data
     if (!Login.checkLoginData(data)) {
-      throw new Error()
+      return ctx.throw(403)
     }
 
     const user = await getOrCreateUser({
@@ -48,6 +49,32 @@ export default class {
       name: userData.name,
 
       email: userData.email,
+    })
+    ctx.body = user.strippedAndFilled(true)
+  }
+
+  @Post('/vk')
+  async vk(ctx: Context) {
+    const data = ctx.request.body
+    const name = `${data.first_name}${
+      data.last_name ? ` ${data.last_name}` : ''
+    }`
+    const id = data.uid
+    const hash = data.hash
+    if (!hash) {
+      return ctx.throw(403)
+    }
+    // verify the data
+    const stringToVerify = `${process.env.VK_APP_ID}${id}${
+      process.env.VK_SECRET
+    }`
+    if (md5(stringToVerify) !== hash) {
+      return ctx.throw(403)
+    }
+
+    const user = await getOrCreateUser({
+      name,
+      vkId: `${id}`,
     })
     ctx.body = user.strippedAndFilled(true)
   }
