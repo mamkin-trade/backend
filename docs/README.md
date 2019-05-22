@@ -80,6 +80,10 @@ Resets user's balance to \$10 000 and removes all orders.
 
 Returns list of [Tickers](#ticker) mapped by ticker pair name.
 
+### [Public] GET `/nasdaq`
+
+Returns list of [NasdaqTickers](#nasdaqticker) mapped by ticker pair name.
+
 ## `/orders`
 
 ### [Public] GET `/user/:id`
@@ -169,6 +173,34 @@ Cancels [Order](#order).
 | volume           | number  | _Optional._ Daily volume                                                    |
 | high             | number  | _Optional._ Daily high                                                      |
 | low              | number  | _Optional._ Daily low                                                       |
+
+### NasdaqTicker
+
+| field             | type                        | description          |
+| ----------------- | --------------------------- | -------------------- |
+| symbol            | string                      | Name of the stock    |
+| currentPrice      | [ShortFormat](#shortformat) | Current price        |
+| totalCash         | [Format](#format)           | Total cash           |
+| totalCashPerShare | [ShortFormat](#shortformat) | Total cash per share |
+| totalRevenue      | [Format](#format)           | Total revenue        |
+| grossProfits      | [Format](#format)           | Gross profits        |
+| earningGrowth     | [ShortFormat](#shortformat) | Earning growth       |
+| revenueGrowth     | [ShortFormat](#shortformat) | Revenue growth       |
+
+### ShortFormat
+
+| field | type   | description             |
+| ----- | ------ | ----------------------- |
+| raw   | number | Raw represenation       |
+| fmt   | string | Formatted represenation |
+
+### Format
+
+| field   | type   | description                  |
+| ------- | ------ | ---------------------------- |
+| raw     | number | Raw represenation            |
+| fmt     | string | Formatted represenation      |
+| longFmt | string | Long formatted represenation |
 
 ### Order
 
