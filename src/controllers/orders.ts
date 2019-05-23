@@ -2,14 +2,7 @@
 import { Context } from 'koa'
 import { Controller, Get, Post, Delete } from 'koa-router-ts'
 import { authenticate } from '../middlewares/authenticate'
-import {
-  UserModel,
-  OrderModel,
-  OrderType,
-  OrderSide,
-  User,
-  Order,
-} from '../models'
+import { UserModel, OrderModel, OrderSide, User, Order } from '../models'
 import { tickers } from '../helpers/bitfinex'
 import { nasdaq } from '../helpers/nasdaq'
 import { executeLocked } from '../helpers/locker'
@@ -95,15 +88,6 @@ export default class {
     let price = new Big(ctx.request.body.price || 0)
     const isMarket = type === 'market'
     const isBuy = side === OrderSide.buy
-    const feeAmount = feePercent(isMarket)
-    const fee = crypto
-      ? amount.mul(feeAmount)
-      : amount.mul(price).mul(feeAmount)
-    // Split symbol
-    const firstCurrency = crypto
-      ? symbol.substr(0, 3).toLowerCase()
-      : symbol.toLowerCase()
-    const secondCurrency = crypto ? symbol.substr(3).toLowerCase() : 'usd'
     // Get current price
     const uppercaseSymbol = symbol.toUpperCase()
     const currentPrice = isBuy
@@ -116,6 +100,16 @@ export default class {
     if (isMarket) {
       price = currentPrice
     }
+    // Get fee
+    const feeAmount = feePercent(isMarket)
+    const fee = crypto
+      ? amount.mul(feeAmount)
+      : amount.mul(price).mul(feeAmount)
+    // Split symbol
+    const firstCurrency = crypto
+      ? symbol.substr(0, 3).toLowerCase()
+      : symbol.toLowerCase()
+    const secondCurrency = crypto ? symbol.substr(3).toLowerCase() : 'usd'
     // Check price
     if (price.lte(0)) {
       return ctx.throw(400, JSON.stringify(errors.priceLessThanZero))
