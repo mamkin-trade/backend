@@ -47,4 +47,16 @@ export const errors = {
     en: 'Amount cannot be more than maximum order',
     ru: 'Количество не может быть больше максимального ордера',
   },
+  amountNotInteger: {
+    en: 'Amount should be an integer',
+    ru: 'Количество должно быть целым числом',
+  },
+  priceMoreThanCurrent: {
+    en: 'Price cannot be higher than ticker price',
+    ru: 'Цена не может быть выше цены тикера',
+  },
+  priceLessThanCurrent: {
+    en: 'Price cannot be lower than ticker price',
+    ru: 'Цена не может быть ниже цены тикера',
+  },
 }

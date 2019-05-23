@@ -216,4 +216,5 @@ Cancels [Order](#order).
 | cancelled      | boolean          | Whether order is cancelled                                   |
 | createdAt      | Date             | When order was created                                       |
 | fee            | number           | Amount paid as a fee                                         |
+| crypto         | boolean          | Whether it's crypto (true) or stocks (false)                 |
 | completionDate | Date             | _Optional._ When the order was completed                     |

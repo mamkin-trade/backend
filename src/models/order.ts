@@ -41,6 +41,9 @@ export class Order extends Typegoose {
   @prop({ required: true, default: 0 })
   fee: number
 
+  @prop({ required: true, default: true })
+  crypto: boolean
+
   @instanceMethod
   stripped() {
     const stripFields = ['__v', 'user', 'updatedAt']

@@ -11,6 +11,7 @@ import {
   Order,
 } from '../models'
 import { tickers } from '../helpers/bitfinex'
+import { nasdaq } from '../helpers/nasdaq'
 import { executeLocked } from '../helpers/locker'
 import { InstanceType } from 'typegoose'
 import { errors } from '../helpers/errors'
@@ -18,8 +19,8 @@ import { Big } from 'big.js'
 import { precision, round } from '../helpers/precision'
 import { minimumOrderSize, maximumOrderSize } from '../helpers/orderSize'
 import { notify } from '../helpers/subscribe'
-
-const baseFee = 0.002
+import { isCrypto } from '../helpers/isCrypto'
+import { fee as feePercent } from '../helpers/fee'
 
 @Controller('/orders')
 export default class {
@@ -89,19 +90,29 @@ export default class {
   async postOrder(ctx: Context) {
     // Destruct params
     const { symbol, side, type } = ctx.request.body
+    const crypto = isCrypto(symbol)
     const amount = new Big(ctx.request.body.amount || 0)
-    const fee = amount.mul(baseFee)
     let price = new Big(ctx.request.body.price || 0)
+    const isMarket = type === 'market'
+    const isBuy = side === OrderSide.buy
+    const feeAmount = feePercent(isMarket)
+    const fee = crypto
+      ? amount.mul(feeAmount)
+      : amount.mul(price).mul(feeAmount)
     // Split symbol
-    const firstCurrency = symbol.substr(0, 3)
-    const secondCurrency = symbol.substr(3)
+    const firstCurrency = crypto ? symbol.substr(0, 3) : symbol
+    const secondCurrency = crypto ? symbol.substr(3) : 'usd'
     // Get current price
-    if (type === 'market') {
-      const uppercaseSymbol = symbol.toUpperCase()
-      price =
-        side === OrderSide.buy
-          ? new Big(tickers[uppercaseSymbol].ask)
-          : new Big(tickers[uppercaseSymbol].bid)
+    const uppercaseSymbol = symbol.toUpperCase()
+    const currentPrice = (price = isBuy
+      ? crypto
+        ? new Big(tickers[uppercaseSymbol].ask)
+        : new Big(nasdaq[uppercaseSymbol].currentPrice.raw)
+      : crypto
+      ? new Big(tickers[uppercaseSymbol].bid)
+      : new Big(nasdaq[uppercaseSymbol].currentPrice.raw))
+    if (isMarket) {
+      price = currentPrice
     }
     // Check price
     if (price.lte(0)) {
@@ -119,6 +130,19 @@ export default class {
     if (price.gt(100000000)) {
       return ctx.throw(400, JSON.stringify(errors.priceMoreThanMaximum))
     }
+    if (type === 'limit') {
+      if (isBuy && price.gt(currentPrice)) {
+        return ctx.throw(400, JSON.stringify(errors.priceMoreThanCurrent))
+      } else if (!isBuy && price.lt(currentPrice)) {
+        return ctx.throw(400, JSON.stringify(errors.priceLessThanCurrent))
+      }
+    } else if (type === 'stop') {
+      if (!isBuy && price.gt(currentPrice)) {
+        return ctx.throw(400, JSON.stringify(errors.priceMoreThanCurrent))
+      } else if (isBuy && price.lt(currentPrice)) {
+        return ctx.throw(400, JSON.stringify(errors.priceLessThanCurrent))
+      }
+    }
     // Check amount
     if (amount.lte(0)) {
       return ctx.throw(400, JSON.stringify(errors.amountLessThanZero))
@@ -129,59 +153,73 @@ export default class {
     if (amount.gt(maximumOrderSize(symbol))) {
       return ctx.throw(400, JSON.stringify(errors.amountMoreThanMaximumOrder))
     }
+    if (!crypto && !amount.mod(1).eq(0)) {
+      return ctx.throw(400, JSON.stringify(errors.amountNotInteger))
+    }
     // Create order
-    const isTypeMarket = type === OrderType.market
     let order = new OrderModel({
       symbol,
       amount: Number(amount),
       side,
       type,
-      completed: isTypeMarket,
+      completed: isMarket,
       price: Number(price),
       user: ctx.state.user,
-      heldAmount: Number(side === OrderSide.buy ? price.mul(amount) : amount),
+      heldAmount: Number(isBuy ? price.mul(amount) : amount),
       fee: Number(fee),
+      crypto,
     })
     // Check if user can afford this order and add or execute it
     let user = ctx.state.user as InstanceType<User>
     await executeLocked(user.id, async () => {
-      // Destruct symbols
-      const first = symbol.substr(0, 3).toLowerCase()
-      const second = symbol.substr(3, 3).toLowerCase()
       // Get fresh user
       user = await UserModel.findOne({ _id: user.id })
       // Check if user has enough currency
       if (
-        (order.side === OrderSide.buy &&
-          (user.balance[second] || 0) < Number(price.mul(amount))) ||
-        (order.side === OrderSide.sell && (user.balance[first] || 0) < amount)
+        (isBuy && (user.balance[secondCurrency] || 0) < crypto
+          ? Number(price.mul(amount))
+          : Number(price.mul(amount).add(fee))) ||
+        (!isBuy && (user.balance[firstCurrency] || 0) < amount)
       ) {
         return ctx.throw(403, JSON.stringify(errors.insufficientFunds))
       }
       // Execute
-      if (side === OrderSide.buy) {
-        user.balance[second] = round(user.balance[second] - order.heldAmount, {
-          currency: second,
-        })
-        if (type === OrderType.market) {
-          user.balance[first] = round(
-            amount.minus(fee).add(user.balance[first] || 0),
-            { currency: first }
+      if (isBuy) {
+        user.balance[secondCurrency] = round(
+          user.balance[secondCurrency] -
+            order.heldAmount -
+            (crypto ? 0 : Number(fee)),
+          {
+            currency: secondCurrency,
+          }
+        )
+        if (isMarket) {
+          user.balance[firstCurrency] = round(
+            amount
+              .minus(crypto ? fee : 0)
+              .add(user.balance[firstCurrency] || 0),
+            { currency: firstCurrency }
           )
         }
       } else {
-        user.balance[first] = round(user.balance[first] - order.heldAmount, {
-          currency: first,
-        })
-        if (type === OrderType.market) {
-          user.balance[second] = round(
-            price.mul(amount.minus(fee)).add(user.balance[second] || 0),
-            { currency: second }
+        user.balance[firstCurrency] = round(
+          user.balance[firstCurrency] - order.heldAmount,
+          {
+            currency: firstCurrency,
+          }
+        )
+        if (isMarket) {
+          user.balance[secondCurrency] = round(
+            price
+              .mul(amount.minus(crypto ? fee : 0))
+              .minus(crypto ? 0 : fee)
+              .add(user.balance[secondCurrency] || 0),
+            { currency: secondCurrency }
           )
         }
       }
       user.markModified('balance')
-      if (type === OrderType.market) {
+      if (isMarket) {
         order.completionDate = new Date()
       }
       // Add order and save user
@@ -225,11 +263,18 @@ export default class {
       // Add completion date
       order.completionDate = new Date()
       // Refund the money
-      const first = order.symbol.substr(0, 3).toLowerCase()
-      const second = order.symbol.substr(3, 3).toLowerCase()
-      const incrementField = order.side === OrderSide.buy ? second : first
+      const first = order.crypto
+        ? order.symbol.substr(0, 3).toLowerCase()
+        : order.symbol.toLowerCase()
+      const second = order.crypto
+        ? order.symbol.substr(3, 3).toLowerCase()
+        : 'usd'
+      const isBuy = order.side === OrderSide.buy
+      const incrementField = isBuy ? second : first
       user.balance[incrementField] = round(
-        user.balance[incrementField] + order.heldAmount,
+        user.balance[incrementField] +
+          order.heldAmount +
+          (!order.crypto && isBuy ? order.fee : 0),
         { currency: incrementField }
       )
       user.markModified('balance')

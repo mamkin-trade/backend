@@ -2,7 +2,7 @@
 import axios from 'axios'
 import * as Client from 'ftp'
 
-interface NasdaqTicker {
+export interface NasdaqTicker {
   symbol: string
   currentPrice: {
     raw: number
