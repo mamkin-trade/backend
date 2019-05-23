@@ -93,7 +93,6 @@ export default class {
     const crypto = isCrypto(symbol)
     const amount = new Big(ctx.request.body.amount || 0)
     let price = new Big(ctx.request.body.price || 0)
-    console.log(Number(price))
     const isMarket = type === 'market'
     const isBuy = side === OrderSide.buy
     const feeAmount = feePercent(isMarket)
@@ -107,13 +106,13 @@ export default class {
     const secondCurrency = crypto ? symbol.substr(3).toLowerCase() : 'usd'
     // Get current price
     const uppercaseSymbol = symbol.toUpperCase()
-    const currentPrice = (price = isBuy
+    const currentPrice = isBuy
       ? crypto
         ? new Big(tickers[uppercaseSymbol].ask)
         : new Big(nasdaq[uppercaseSymbol].currentPrice.raw)
       : crypto
       ? new Big(tickers[uppercaseSymbol].bid)
-      : new Big(nasdaq[uppercaseSymbol].currentPrice.raw))
+      : new Big(nasdaq[uppercaseSymbol].currentPrice.raw)
     if (isMarket) {
       price = currentPrice
     }
@@ -160,17 +159,6 @@ export default class {
       return ctx.throw(400, JSON.stringify(errors.amountNotInteger))
     }
     // Create order
-    console.log({
-      symbol,
-      amount: Number(amount),
-      side,
-      type,
-      completed: isMarket,
-      price: Number(price),
-      heldAmount: Number(isBuy ? price.mul(amount) : amount),
-      fee: Number(fee),
-      crypto,
-    })
     let order = new OrderModel({
       symbol,
       amount: Number(amount),
