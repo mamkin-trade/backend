@@ -95,7 +95,7 @@ export class User extends Typegoose {
           }
         } else {
           const value = activeOrder.heldAmount
-          const ticker = nasdaq[first] as NasdaqTicker
+          const ticker = nasdaq[first.toUpperCase()] as NasdaqTicker
           if (ticker) {
             this._doc.overallBalance += value * ticker.currentPrice.raw
           }
@@ -123,7 +123,6 @@ export class User extends Typegoose {
         if (!firstConversionRate || !secondConversionRate) {
           // Try stocks
           const nasdaqTicker = nasdaq[key.toUpperCase()]
-          console.log(nasdaqTicker)
           if (nasdaqTicker) {
             balance += value * nasdaqTicker.currentPrice.raw
           }
