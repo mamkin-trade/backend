@@ -159,6 +159,17 @@ export default class {
       return ctx.throw(400, JSON.stringify(errors.amountNotInteger))
     }
     // Create order
+    console.log(
+      symbol,
+      amount,
+      side,
+      type,
+      isMarket,
+      Number(price),
+      Number(isBuy ? price.mul(amount) : amount),
+      Number(fee),
+      crypto
+    )
     let order = new OrderModel({
       symbol,
       amount: Number(amount),
@@ -177,12 +188,6 @@ export default class {
       // Get fresh user
       user = await UserModel.findOne({ _id: user.id })
       // Check if user has enough currency
-      console.log(
-        isBuy,
-        user.balance[secondCurrency],
-        crypto,
-        Number(price.mul(amount))
-      )
       if (
         (isBuy &&
           (user.balance[secondCurrency] || 0) <
