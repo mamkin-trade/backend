@@ -40,24 +40,32 @@ async function checkOrders() {
     }
     if (o.type === 'limit') {
       if (o.side === OrderSide.buy) {
-        return 'ask' in ticker
-          ? ticker.ask
-          : (ticker as NasdaqTicker).currentPrice.raw <= o.price
+        return (
+          ('ask' in ticker
+            ? ticker.ask
+            : (ticker as NasdaqTicker).currentPrice.raw) <= o.price
+        )
       } else {
-        return 'bid' in ticker
-          ? ticker.bid
-          : (ticker as NasdaqTicker).currentPrice.raw >= o.price
+        return (
+          ('bid' in ticker
+            ? ticker.bid
+            : (ticker as NasdaqTicker).currentPrice.raw) >= o.price
+        )
       }
     } else {
       // stop orders
       if (o.side === OrderSide.buy) {
-        return 'ask' in ticker
-          ? ticker.ask
-          : (ticker as NasdaqTicker).currentPrice.raw >= o.price
+        return (
+          ('ask' in ticker
+            ? ticker.ask
+            : (ticker as NasdaqTicker).currentPrice.raw) >= o.price
+        )
       } else {
-        return 'bid' in ticker
-          ? ticker.bid
-          : (ticker as NasdaqTicker).currentPrice.raw <= o.price
+        return (
+          ('bid' in ticker
+            ? ticker.bid
+            : (ticker as NasdaqTicker).currentPrice.raw) <= o.price
+        )
       }
     }
   })
