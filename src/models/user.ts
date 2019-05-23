@@ -123,6 +123,7 @@ export class User extends Typegoose {
         if (!firstConversionRate || !secondConversionRate) {
           // Try stocks
           const nasdaqTicker = nasdaq[key.toUpperCase()]
+          console.log(nasdaqTicker)
           if (nasdaqTicker) {
             balance += value * nasdaqTicker.currentPrice.raw
           }
