@@ -189,7 +189,7 @@ export default class {
             (crypto
               ? Number(price.mul(amount))
               : Number(price.mul(amount).add(fee)))) ||
-        (!isBuy && (user.balance[firstCurrency] || 0)) < amount
+        (!isBuy && (user.balance[firstCurrency] || 0) < amount)
       ) {
         return ctx.throw(403, JSON.stringify(errors.insufficientFunds))
       }
