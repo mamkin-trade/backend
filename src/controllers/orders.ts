@@ -100,8 +100,10 @@ export default class {
       ? amount.mul(feeAmount)
       : amount.mul(price).mul(feeAmount)
     // Split symbol
-    const firstCurrency = crypto ? symbol.substr(0, 3) : symbol
-    const secondCurrency = crypto ? symbol.substr(3) : 'usd'
+    const firstCurrency = crypto
+      ? symbol.substr(0, 3).toLowerCase()
+      : symbol.toLowerCase()
+    const secondCurrency = crypto ? symbol.substr(3).toLowerCase() : 'usd'
     // Get current price
     const uppercaseSymbol = symbol.toUpperCase()
     const currentPrice = (price = isBuy
