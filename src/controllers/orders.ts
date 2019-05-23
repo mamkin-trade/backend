@@ -177,6 +177,12 @@ export default class {
       // Get fresh user
       user = await UserModel.findOne({ _id: user.id })
       // Check if user has enough currency
+      console.log(
+        isBuy,
+        user.balance[secondCurrency],
+        crypto,
+        Number(price.mul(amount))
+      )
       if (
         (isBuy &&
           (user.balance[secondCurrency] || 0) <
