@@ -176,10 +176,12 @@ export default class {
       user = await UserModel.findOne({ _id: user.id })
       // Check if user has enough currency
       if (
-        (isBuy && (user.balance[secondCurrency] || 0) < crypto
-          ? Number(price.mul(amount))
-          : Number(price.mul(amount).add(fee))) ||
-        (!isBuy && (user.balance[firstCurrency] || 0) < amount)
+        (isBuy &&
+          (user.balance[secondCurrency] || 0) <
+            (crypto
+              ? Number(price.mul(amount))
+              : Number(price.mul(amount).add(fee)))) ||
+        (!isBuy && (user.balance[firstCurrency] || 0)) < amount
       ) {
         return ctx.throw(403, JSON.stringify(errors.insufficientFunds))
       }
