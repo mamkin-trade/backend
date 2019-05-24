@@ -2,7 +2,12 @@
 import { Context } from 'koa'
 import { Controller, Get, Post } from 'koa-router-ts'
 import { UserModel, User } from '../models'
-import { leaderboard } from '../helpers/leaderboard'
+import {
+  leaderboardBalanceUp,
+  leaderboardBalanceDown,
+  leaderboardSubscribersUp,
+  leaderboardSubscribersDown,
+} from '../helpers/leaderboard'
 import { errors } from '../helpers/errors'
 import { authenticate } from '../middlewares/authenticate'
 import { InstanceType } from 'typegoose'
@@ -11,7 +16,19 @@ import { InstanceType } from 'typegoose'
 export default class {
   @Get('/leaderboard')
   async leadeboard(ctx: Context) {
-    ctx.body = leaderboard
+    if (ctx.query.sortBy === 'subscribers') {
+      if (ctx.query.descending === 'false') {
+        ctx.body = leaderboardSubscribersDown
+      } else {
+        ctx.body = leaderboardSubscribersUp
+      }
+    } else {
+      if (ctx.query.descending === 'false') {
+        ctx.body = leaderboardBalanceDown
+      } else {
+        ctx.body = leaderboardBalanceUp
+      }
+    }
   }
 
   @Get('/:id')

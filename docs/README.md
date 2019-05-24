@@ -58,7 +58,14 @@ Signs up with vk, returns [User](#user).
 
 ### [Public] GET `/leaderboard`
 
-Returns list of [Users](#user) with the highest balances, exluding users without trade history.
+Returns list of 10 [Users](#user) with either the highest balance or what is specified, exluding users without trade history.
+
+#### Parameters
+
+| field      | type    | Required | description                       |
+| ---------- | ------- | -------- | --------------------------------- |
+| sortBy     | string  | Optional | Can be 'balance' or 'subscribers' |
+| descending | boolean | Optional | How to sort response              |
 
 ### [Public] GET `/:id`
 
