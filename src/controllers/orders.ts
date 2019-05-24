@@ -30,11 +30,11 @@ export default class {
       .filter((o: Order) => {
         let valid = true
         if (ctx.query.completed !== undefined) {
-          if (o.completed !== ctx.query.completed) {
+          if (!o.completed) {
             valid = false
           }
         } else if (ctx.query.cancelled !== undefined) {
-          if (o.cancelled !== ctx.query.cancelled) {
+          if (!o.cancelled) {
             valid = false
           }
         } else if (ctx.query.active !== undefined) {
