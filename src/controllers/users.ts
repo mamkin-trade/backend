@@ -16,6 +16,7 @@ import { InstanceType } from 'typegoose'
 export default class {
   @Get('/leaderboard')
   async leadeboard(ctx: Context) {
+    console.log(ctx.query.sortBy, ctx.query.descending)
     if (ctx.query.sortBy === 'subscribers') {
       if (ctx.query.descending === 'false') {
         ctx.body = leaderboardSubscribersDown
