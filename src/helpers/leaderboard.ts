@@ -24,10 +24,10 @@ async function updateLeaderboard() {
       )
       .slice(0, 10)
     leaderboardSubscribersUp = users
-      .sort((a: User, b: User) => (a._doc.subCount > b._doc.subCount ? -1 : 1))
+      .sort((a: any, b: any) => (a.subCount > b.subCount ? -1 : 1))
       .slice(0, 10)
     leaderboardSubscribersDown = users
-      .sort((a: User, b: User) => (a._doc.subCount > b._doc.subCount ? -1 : 1))
+      .sort((a: any, b: any) => (a.subCount > b.subCount ? -1 : 1))
       .slice(0, 10)
   } catch (err) {
     report(err)
