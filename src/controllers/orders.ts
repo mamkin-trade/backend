@@ -29,15 +29,15 @@ export default class {
     let orders = user.orders
       .filter((o: Order) => {
         let valid = true
-        if (ctx.params.completed !== undefined) {
-          if (o.completed !== ctx.params.completed) {
+        if (ctx.query.completed !== undefined) {
+          if (o.completed !== ctx.query.completed) {
             valid = false
           }
-        } else if (ctx.params.cancelled !== undefined) {
-          if (o.cancelled !== ctx.params.cancelled) {
+        } else if (ctx.query.cancelled !== undefined) {
+          if (o.cancelled !== ctx.query.cancelled) {
             valid = false
           }
-        } else if (ctx.params.active !== undefined) {
+        } else if (ctx.query.active !== undefined) {
           if (o.cancelled || o.completed) {
             valid = false
           }
