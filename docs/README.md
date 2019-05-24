@@ -146,6 +146,7 @@ Cancels [Order](#order).
 | name           | string | User's name                                                            |
 | balance        | object | User's balance map in form of `currency: number`                       |
 | overallBalance | number | User's overall balance in usd                                          |
+| ordersBalance  | number | User's balance in orders in usd                                        |
 | subCount       | number | Number of user's subscribers                                           |
 | email          | string | _Optional._ User's email                                               |
 | facebookId     | string | _Optional._ User's facebook ID                                         |

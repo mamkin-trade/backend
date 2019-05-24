@@ -59,6 +59,7 @@ export class User extends Typegoose {
       stripFields.push('vkId')
     }
     this._doc.overallBalance = this.overallBalance
+    let ordersBalance = 0
     for (const activeOrder of this.orders.filter(
       (o: Order) => !o.completed && !o.cancelled
     ) as Order[]) {
@@ -72,36 +73,37 @@ export class User extends Typegoose {
       // Add balances from orders
       if (activeOrder.side === OrderSide.buy) {
         if (second === 'usd') {
-          this._doc.overallBalance += activeOrder.heldAmount
+          ordersBalance += activeOrder.heldAmount
         } else {
           const conversionRate = tickers[`${second.toUpperCase()}USD`]
-          this._doc.overallBalance +=
-            activeOrder.heldAmount * conversionRate.bid
+          ordersBalance += activeOrder.heldAmount * conversionRate.bid
         }
       } else {
         if (isCrypto(activeOrder.symbol)) {
           const value = activeOrder.heldAmount
           const simpleRate = tickers[`${first.toUpperCase()}USD`]
           if (simpleRate) {
-            this._doc.overallBalance += value * simpleRate.bid
+            ordersBalance += value * simpleRate.bid
           } else {
             const firstConversionRate = tickers[`${first.toUpperCase()}BTC`]
             const secondConversionRate = tickers['BTCUSD']
             if (!firstConversionRate || !secondConversionRate) {
               continue
             }
-            this._doc.overallBalance +=
+            ordersBalance +=
               value * firstConversionRate.bid * secondConversionRate.bid
           }
         } else {
           const value = activeOrder.heldAmount
           const ticker = nasdaq[first.toUpperCase()] as NasdaqTicker
           if (ticker) {
-            this._doc.overallBalance += value * ticker.currentPrice.raw
+            ordersBalance += value * ticker.currentPrice.raw
           }
         }
       }
     }
+    this._doc.overallBalance += ordersBalance
+    this._doc.ordersBalance = ordersBalance
     return omit(this._doc, stripFields)
   }
 
