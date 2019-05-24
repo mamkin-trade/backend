@@ -92,13 +92,14 @@ Returns list of [Orders](#order) for the user as well as total `count` of users.
 
 #### Parameters
 
-| field     | type    | Required | description                               |
-| --------- | ------- | -------- | ----------------------------------------- |
-| id        | string  | Yes      | ID of the user                            |
-| skip      | number  | Optional | Pagination skip, defaults to 0            |
-| limit     | number  | Optional | Pagination limit, defaults to 20          |
-| completed | boolean | Optional | Return only complete or incomplete orders |
-| cancelled | boolean | Optional | Return only active or cancelled orders    |
+| field     | type    | Required | description                      |
+| --------- | ------- | -------- | -------------------------------- |
+| id        | string  | Yes      | ID of the user                   |
+| skip      | number  | Optional | Pagination skip, defaults to 0   |
+| limit     | number  | Optional | Pagination limit, defaults to 20 |
+| completed | boolean | Optional | Return only complete orders      |
+| cancelled | boolean | Optional | Return only cancelled orders     |
+| active    | boolean | Optional | Return only active orders        |
 
 ### [Public] GET `/user/:id/count`
 

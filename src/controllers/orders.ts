@@ -33,9 +33,12 @@ export default class {
           if (o.completed !== ctx.params.completed) {
             valid = false
           }
-        }
-        if (ctx.params.cancelled !== undefined) {
+        } else if (ctx.params.cancelled !== undefined) {
           if (o.cancelled !== ctx.params.cancelled) {
+            valid = false
+          }
+        } else if (ctx.params.active !== undefined) {
+          if (o.cancelled || o.completed) {
             valid = false
           }
         }
