@@ -14,7 +14,6 @@ import { Order, OrderSide } from './order'
 import { isCrypto } from '../helpers/isCrypto'
 import { nasdaq } from '../helpers/nasdaq'
 import { NasdaqTicker } from '../helpers/nasdaq'
-import { Layer } from 'koa-router'
 
 export class User extends Typegoose {
   @prop({ index: true, lowercase: true })

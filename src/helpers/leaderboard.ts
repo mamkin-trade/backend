@@ -25,12 +25,12 @@ async function updateLeaderboard() {
       .slice(0, 10)
     leaderboardSubscribersUp = users
       .sort((a: User, b: User) =>
-        a.subscribers.length > b.subscribers.length ? -1 : 1
+        (a.subscribers || []).length > (b.subscribers || []).length ? -1 : 1
       )
       .slice(0, 10)
     leaderboardSubscribersDown = users
       .sort((a: User, b: User) =>
-        a.subscribers.length > b.subscribers.length ? -1 : 1
+        (a.subscribers || []).length > (b.subscribers || []).length ? -1 : 1
       )
       .slice(0, 10)
   } catch (err) {
