@@ -47,6 +47,7 @@
     "md5": "^2.2.1",
     "mongoose": "^5.5.2",
     "node-telegram-login": "^1.0.0",
+    "random-token": "^0.0.8",
     "semaphore-async-await": "^1.5.1",
     "telegraf": "^3.29.0",
     "telegraf-i18n": "^6.5.0",

@@ -1,6 +1,6 @@
 // Dependencies
 import { Context } from 'koa'
-import { Controller, Get, Post } from 'koa-router-ts'
+import { Controller, Get, Post, Delete } from 'koa-router-ts'
 import { UserModel, User } from '../models'
 import {
   leaderboardBalanceUp,
@@ -11,6 +11,8 @@ import {
 import { errors } from '../helpers/errors'
 import { authenticate } from '../middlewares/authenticate'
 import { InstanceType } from 'typegoose'
+const RandomToken = require('random-token')
+const randomToken = RandomToken.create(new Date().toString())
 
 @Controller('/users')
 export default class {
@@ -50,5 +52,28 @@ export default class {
     user.orders = []
     user = await user.save()
     ctx.body = user
+  }
+
+  @Get('/keys', authenticate)
+  keys(ctx: Context) {
+    let user = ctx.state.user as InstanceType<User>
+    ctx.body = user.keys
+  }
+
+  @Post('/keys', authenticate)
+  async addKey(ctx: Context) {
+    let user = ctx.state.user as InstanceType<User>
+    const key = `${user.id}-${randomToken(20)}`
+    user.keys.push(key)
+    await user.save()
+    ctx.body = key
+  }
+
+  @Delete('/key/:id', authenticate)
+  async deleteKey(ctx: Context) {
+    let user = ctx.state.user as InstanceType<User>
+    user.keys = user.keys.filter(k => k !== ctx.params.id)
+    await user.save()
+    ctx.status = 200
   }
 }

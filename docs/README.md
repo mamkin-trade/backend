@@ -3,6 +3,7 @@
 - API runs at https://backend.mamkin.trade
 - [Insomnia](https://insomnia.rest/) schema is in this folder as well
 - After obtaining `token` at `/login` you should sign all private requests with it putting it into `token` header
+- Or you can sign all private requests with an api token obtained by `/users/keys` putting it into `key` header
 
 # API documentation
 
@@ -80,6 +81,24 @@ Returns [User](#user)
 ### POST `/reset`
 
 Resets user's balance to \$10 000 and removes all orders.
+
+### GET `/keys`
+
+Returns list of user's api keys
+
+### POST `/key`
+
+Creates and returns a new api key for the user
+
+### DELETE `/key/:id`
+
+Deletes api key from the user
+
+#### Parameters
+
+| field | type   | Required | description       |
+| ----- | ------ | -------- | ----------------- |
+| id    | string | Yes      | Api key to delete |
 
 ## `/market`
 

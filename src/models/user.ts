@@ -24,19 +24,18 @@ export class User extends Typegoose {
   telegramId?: string
   @prop({ index: true, lowercase: true })
   vkId?: string
-
   @prop({ required: true, index: true })
   name: string
 
   @prop({ required: true, index: true, unique: true })
   token: string
+  @arrayProp({ required: true, index: true, items: String, default: [] })
+  keys: string[]
 
   @prop({ required: true, default: { usd: 10000 } })
   balance: object
-
   @arrayProp({ required: true, itemsRef: Order, default: [] })
   orders: Ref<Order>[]
-
   @arrayProp({ required: true, items: Number, default: [] })
   subscribers: number[]
 
@@ -49,6 +48,7 @@ export class User extends Typegoose {
       '__v',
       'orders',
       'subscribers',
+      'keys',
     ]
     if (!withToken) {
       stripFields.push('token')
