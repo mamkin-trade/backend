@@ -56,6 +56,7 @@ export default class {
   @Get('/keys', authenticate)
   keys(ctx: Context) {
     let user = ctx.state.user as InstanceType<User>
+    console.log(user.keys)
     ctx.body = user.keys
   }
 
