@@ -43,6 +43,14 @@ export default class {
     ctx.body = user.strippedAndFilled()
   }
 
+  @Get('/keys')
+  keys(ctx: Context) {
+    // let user = ctx.state.user as InstanceType<User>
+    // console.log(user.apiKeys)
+    // ctx.body = user.apiKeys
+    ctx.status = 200
+  }
+
   @Post('/reset', authenticate)
   async reset(ctx: Context) {
     let user = ctx.state.user as InstanceType<User>
@@ -51,14 +59,6 @@ export default class {
     user.orders = []
     user = await user.save()
     ctx.body = user
-  }
-
-  @Get('/keys')
-  keys(ctx: Context) {
-    // let user = ctx.state.user as InstanceType<User>
-    // console.log(user.apiKeys)
-    // ctx.body = user.apiKeys
-    ctx.status = 200
   }
 
   @Post('/keys', authenticate)
