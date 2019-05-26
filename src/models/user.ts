@@ -48,7 +48,7 @@ export class User extends Typegoose {
       '__v',
       'orders',
       'subscribers',
-      'keys',
+      'apiKeys',
     ]
     if (!withExtra) {
       stripFields.push('token')
