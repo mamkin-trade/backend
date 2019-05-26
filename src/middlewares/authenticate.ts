@@ -35,7 +35,7 @@ export async function authenticate(ctx: Context, next: Function) {
       if (!user) {
         return ctx.throw(403, errors.noUser)
       }
-      if (user.keys.indexOf(key) < 0) {
+      if (user.apiKeys.indexOf(key) < 0) {
         return ctx.throw(403, JSON.stringify(errors.authentication))
       }
     } else {
