@@ -187,6 +187,8 @@ Cancels [Order](#order).
 | subCount       | number | Number of user's subscribers                                           |
 | email          | string | _Optional._ User's email                                               |
 | facebookId     | string | _Optional._ User's facebook ID                                         |
+| vkId           | string | _Optional._ User's VK ID                                               |
+| telegramId     | string | _Optional._ User's Telegram ID                                         |
 | token          | number | _Optional._ Access token used to authenticate requests to Mamkin Trade |
 
 ### Ticker
