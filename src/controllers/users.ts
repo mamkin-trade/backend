@@ -64,7 +64,9 @@ export default class {
   async addKey(ctx: Context) {
     let user = ctx.state.user as InstanceType<User>
     const key = `${user.id}-${randomToken(20)}`
+    console.log(key)
     user.keys.push(key)
+    console.log(user.keys)
     await user.save()
     ctx.body = key
   }
