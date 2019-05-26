@@ -30,7 +30,7 @@ export class User extends Typegoose {
   @prop({ required: true, index: true, unique: true })
   token: string
   @arrayProp({ required: true, index: true, items: String, default: [] })
-  keys: string[]
+  apiKeys: string[]
 
   @prop({ required: true, default: { usd: 10000 } })
   balance: object

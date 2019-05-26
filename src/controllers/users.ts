@@ -56,8 +56,8 @@ export default class {
   @Get('/keys', authenticate)
   keys(ctx: Context) {
     let user = ctx.state.user as InstanceType<User>
-    console.log(user.keys)
-    ctx.body = user.keys
+    console.log(user.apiKeys)
+    ctx.body = user.apiKeys
   }
 
   @Post('/keys', authenticate)
@@ -65,8 +65,8 @@ export default class {
     let user = ctx.state.user as InstanceType<User>
     const key = `${user.id}-${randomToken(20)}`
     console.log(key)
-    user.keys.push(key)
-    console.log(user.keys)
+    user.apiKeys.push(key)
+    console.log(user.apiKeys)
     await user.save()
     ctx.body = key
   }
@@ -74,7 +74,7 @@ export default class {
   @Delete('/key/:id', authenticate)
   async deleteKey(ctx: Context) {
     let user = ctx.state.user as InstanceType<User>
-    user.keys = user.keys.filter(k => k !== ctx.params.id)
+    user.apiKeys = user.apiKeys.filter(k => k !== ctx.params.id)
     await user.save()
     ctx.status = 200
   }
