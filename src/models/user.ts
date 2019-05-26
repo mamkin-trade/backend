@@ -40,7 +40,7 @@ export class User extends Typegoose {
   subscribers: number[]
 
   @instanceMethod
-  strippedAndFilled(withToken = false) {
+  strippedAndFilled(withExtra = false, withToken = true) {
     this._doc.subCount = this.subscribers.length
     const stripFields = [
       'createdAt',
@@ -50,12 +50,15 @@ export class User extends Typegoose {
       'subscribers',
       'keys',
     ]
-    if (!withToken) {
+    if (!withExtra) {
       stripFields.push('token')
       stripFields.push('email')
       stripFields.push('facebookId')
       stripFields.push('telegramId')
       stripFields.push('vkId')
+    }
+    if (!withToken) {
+      stripFields.push('token')
     }
     this._doc.overallBalance = this.overallBalance
     let ordersBalance = 0

@@ -55,6 +55,16 @@ Signs up with vk, returns [User](#user).
 | -------- | ------ | -------- | ---------------------------------------------------------------------------- |
 | userData | object | Yes      | User data obatined from VK including first name, last name, user id and hash |
 
+### [Public] POST `/key`
+
+Signs is with api key, returns [User](#user).
+
+#### Parameters
+
+| field | type   | Required | description                              |
+| ----- | ------ | -------- | ---------------------------------------- |
+| key   | string | Yes      | API key obtained from previous api calls |
+
 ## `/users`
 
 ### [Public] GET `/leaderboard`

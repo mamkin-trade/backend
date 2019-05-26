@@ -1,7 +1,7 @@
 // Dependencies
 import axios from 'axios'
 import { Context } from 'koa'
-import { getOrCreateUser } from '../models'
+import { getOrCreateUser, UserModel } from '../models'
 import { Controller, Post } from 'koa-router-ts'
 import Facebook = require('facebook-node-sdk')
 const TelegramLogin = require('node-telegram-login')
@@ -76,6 +76,24 @@ export default class {
       vkId: `${id}`,
     })
     ctx.body = user.strippedAndFilled(true)
+  }
+
+  @Post('/key')
+  async key(ctx: Context) {
+    const data = ctx.request.body
+    const key = data.key
+    if (!key) {
+      return ctx.throw(403)
+    }
+    const userId = key.split('-')[0]
+    if (!userId) {
+      return ctx.throw(403)
+    }
+    const user = await UserModel.findById(userId)
+    if (!user) {
+      return ctx.throw(403)
+    }
+    ctx.body = user.strippedAndFilled(true, false)
   }
 }
 
