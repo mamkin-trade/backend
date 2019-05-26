@@ -93,6 +93,9 @@ export default class {
     if (!user) {
       return ctx.throw(403)
     }
+    if (user.apiKeys.indexOf(key) < 0) {
+      return ctx.throw(403)
+    }
     ctx.body = user.strippedAndFilled(true, false)
   }
 }
