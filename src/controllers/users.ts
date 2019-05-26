@@ -55,9 +55,10 @@ export default class {
 
   @Get('/keys')
   keys(ctx: Context) {
-    let user = ctx.state.user as InstanceType<User>
-    console.log(user.apiKeys)
-    ctx.body = user.apiKeys
+    // let user = ctx.state.user as InstanceType<User>
+    // console.log(user.apiKeys)
+    // ctx.body = user.apiKeys
+    ctx.status = 200
   }
 
   @Post('/keys', authenticate)
