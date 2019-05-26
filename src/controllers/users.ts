@@ -16,7 +16,7 @@ const randomToken = require('random-token')
 @Controller('/users')
 export default class {
   @Get('/leaderboard')
-  async leadeboard(ctx: Context) {
+  leadeboard(ctx: Context) {
     if (ctx.query.sortBy === 'subscribers') {
       if (ctx.query.descending === 'false') {
         ctx.body = leaderboardSubscribersDown
@@ -32,6 +32,30 @@ export default class {
     }
   }
 
+  @Get('/keys', authenticate)
+  keys(ctx: Context) {
+    let user = ctx.state.user as InstanceType<User>
+    ctx.body = user.apiKeys
+    ctx.status = 200
+  }
+
+  @Post('/keys', authenticate)
+  async addKey(ctx: Context) {
+    let user = ctx.state.user as InstanceType<User>
+    const key = `${user.id}-${randomToken(20)}`
+    user.apiKeys.push(key)
+    await user.save()
+    ctx.body = key
+  }
+
+  @Delete('/key/:id', authenticate)
+  async deleteKey(ctx: Context) {
+    let user = ctx.state.user as InstanceType<User>
+    user.apiKeys = user.apiKeys.filter(k => k !== ctx.params.id)
+    await user.save()
+    ctx.status = 200
+  }
+
   @Get('/:id')
   async user(ctx: Context) {
     const user = await UserModel.findOne({ _id: ctx.params.id }).populate(
@@ -43,14 +67,6 @@ export default class {
     ctx.body = user.strippedAndFilled()
   }
 
-  @Get('/keys')
-  keys(ctx: Context) {
-    // let user = ctx.state.user as InstanceType<User>
-    // console.log(user.apiKeys)
-    // ctx.body = user.apiKeys
-    ctx.status = 200
-  }
-
   @Post('/reset', authenticate)
   async reset(ctx: Context) {
     let user = ctx.state.user as InstanceType<User>
@@ -59,24 +75,5 @@ export default class {
     user.orders = []
     user = await user.save()
     ctx.body = user
-  }
-
-  @Post('/keys', authenticate)
-  async addKey(ctx: Context) {
-    let user = ctx.state.user as InstanceType<User>
-    const key = `${user.id}-${randomToken(20)}`
-    console.log(key)
-    user.apiKeys.push(key)
-    console.log(user.apiKeys)
-    await user.save()
-    ctx.body = key
-  }
-
-  @Delete('/key/:id', authenticate)
-  async deleteKey(ctx: Context) {
-    let user = ctx.state.user as InstanceType<User>
-    user.apiKeys = user.apiKeys.filter(k => k !== ctx.params.id)
-    await user.save()
-    ctx.status = 200
   }
 }

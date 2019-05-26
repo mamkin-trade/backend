@@ -1,6 +1,7 @@
 // Dependencies
 import axios from 'axios'
 import * as Client from 'ftp'
+import { report } from './report'
 
 export interface NasdaqTicker {
   symbol: string
@@ -44,7 +45,7 @@ async function updateSymbolDetails() {
     const symbols = await getSymbols()
     await fillSymbols(symbols)
   } catch (err) {
-    console.error('Error')
+    await report(err)
   }
 }
 

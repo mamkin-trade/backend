@@ -7,7 +7,6 @@ import { InstanceType } from 'typegoose'
 import { report } from '../helpers/report'
 
 export async function authenticate(ctx: Context, next: Function) {
-  console.log('authenticating')
   try {
     const token = ctx.headers.token
     const key = ctx.headers.key

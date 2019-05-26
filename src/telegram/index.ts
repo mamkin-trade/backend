@@ -10,6 +10,7 @@ import { setupSubscribe } from './commands/subscribe'
 import { setupUnsubscribe } from './commands/unsubscribe'
 import { setupUnsubscribeAll } from './commands/unsubscribeAll'
 import { setupSubscriptions } from './commands/subscriptions'
+import { report } from '../helpers/report'
 
 export const bot = new Telegraf(process.env.TELEGRAM_LOGIN_TOKEN, {
   channelMode: true,
@@ -29,5 +30,5 @@ setupUnsubscribe(bot)
 setupUnsubscribeAll(bot)
 setupSubscriptions(bot)
 // Start bot
-bot.catch(console.error)
+bot.catch(report)
 bot.launch()
