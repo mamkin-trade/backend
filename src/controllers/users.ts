@@ -11,8 +11,7 @@ import {
 import { errors } from '../helpers/errors'
 import { authenticate } from '../middlewares/authenticate'
 import { InstanceType } from 'typegoose'
-const RandomToken = require('random-token')
-const randomToken = RandomToken.create(new Date().toString())
+const randomToken = require('random-token')
 
 @Controller('/users')
 export default class {
