@@ -20,9 +20,7 @@ export default class {
   @Get('/user/:id')
   async orders(ctx: Context) {
     // Run query
-    const user = await UserModel.findOne({ _id: ctx.params.id }).populate(
-      'orders'
-    )
+    const user = await UserModel.findById(ctx.params.id).populate('orders')
     if (!user) {
       return ctx.throw(404, JSON.stringify(errors.noUser))
     }
@@ -59,9 +57,7 @@ export default class {
   @Get('/user/:id/count')
   async count(ctx: Context) {
     // Run query
-    const user = await UserModel.findOne({ _id: ctx.params.id }).populate(
-      'orders'
-    )
+    const user = await UserModel.findById(ctx.params.id).populate('orders')
     if (!user) {
       return ctx.throw(404, JSON.stringify(errors.noUser))
     }
@@ -172,7 +168,7 @@ export default class {
     let user = ctx.state.user as InstanceType<User>
     await executeLocked(user.id, async () => {
       // Get fresh user
-      user = await UserModel.findOne({ _id: user.id })
+      user = await UserModel.findById(user._id)
       // Check if user has enough currency
       if (
         (isBuy &&
@@ -239,7 +235,7 @@ export default class {
     // Get user
     let user = ctx.state.user as InstanceType<User>
     // Get order
-    let order = await OrderModel.findOne({ _id: ctx.params.id })
+    let order = await OrderModel.findById(ctx.params.id)
     // Validate order
     if (
       !order ||
@@ -256,9 +252,9 @@ export default class {
     // Cancel order
     await executeLocked(user.id, async () => {
       // Get fresh order
-      order = await OrderModel.findOne({ _id: order.id })
+      order = await OrderModel.findById(order._id)
       // Get fresh user
-      user = await UserModel.findOne({ _id: user.id })
+      user = await UserModel.findById(user._id)
       // Cancel it
       order.cancelled = true
       // Add completion date

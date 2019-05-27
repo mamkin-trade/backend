@@ -78,9 +78,7 @@ async function checkOrders() {
           let user = order.user as InstanceType<User>
           await executeLocked(user.id, async () => {
             // Get frsh order
-            const freshOrder = await OrderModel.findOne({
-              _id: order.id,
-            })
+            const freshOrder = await OrderModel.findById(order._id)
             // Check if order is still ok
             if (freshOrder.completed || freshOrder.cancelled) {
               return
@@ -88,7 +86,7 @@ async function checkOrders() {
             // Get big amount
             const amount = new Big(freshOrder.amount)
             // Get fresh user
-            user = await UserModel.findOne({ _id: user._id })
+            user = await UserModel.findById(user._id)
             // Destruct symbols
             const first = freshOrder.crypto
               ? freshOrder.symbol.substr(0, 3).toLowerCase()
