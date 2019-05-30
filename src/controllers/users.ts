@@ -30,7 +30,7 @@ export default class {
     const userPosition = leaderboardBalanceDown.findIndex(
       u => u._id === user.id
     )
-    console.log(userPosition)
+    console.log(user.id, leaderboardBalanceDown.map(u => u._id))
     if (userPosition < 0) {
       ctx.throw(500, 'User is not a part of leaderboard')
     }
