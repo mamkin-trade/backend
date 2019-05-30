@@ -26,8 +26,8 @@ export default class {
       ctx.body = { ordersCount: 0 }
       return
     }
-    const userCount = leaderboardBalanceDown.length
-    const userPosition = leaderboardBalanceDown
+    const userCount = leaderboardBalanceUp.length
+    const userPosition = leaderboardBalanceUp
       .map(u => `${u._id}`)
       .indexOf(`${user.id}`)
     console.log(userPosition)
@@ -37,7 +37,7 @@ export default class {
     ctx.body = {
       ordersCount: user.orders.length,
       absoluteNumberOfUsersAbove: userPosition,
-      relativeNumberOfUsersAbove: Math.ceil(userPosition / userCount),
+      relativeNumberOfUsersAbove: Math.ceil((userPosition / userCount) * 100),
     }
   }
 
