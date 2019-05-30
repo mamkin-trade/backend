@@ -31,7 +31,7 @@ export default class {
       u => u._id === user._id
     )
     if (userPosition < 0) {
-      ctx.throw(500)
+      ctx.throw(500, 'User is not a part of leaderboard')
     }
     ctx.body = {
       ordersCount: user.orders.length,
