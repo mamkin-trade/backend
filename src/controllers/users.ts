@@ -15,23 +15,6 @@ const randomToken = require('random-token')
 
 @Controller('/users')
 export default class {
-  @Get('/leaderboard')
-  leadeboard(ctx: Context) {
-    if (ctx.query.sortBy === 'subscribers') {
-      if (ctx.query.descending === 'false') {
-        ctx.body = leaderboardSubscribersDown.slice(0, 10)
-      } else {
-        ctx.body = leaderboardSubscribersUp.slice(0, 10)
-      }
-    } else {
-      if (ctx.query.descending === 'false') {
-        ctx.body = leaderboardBalanceDown.slice(0, 10)
-      } else {
-        ctx.body = leaderboardBalanceUp.slice(0, 10)
-      }
-    }
-  }
-
   @Get('/leaderboard/position/:id')
   async leadeboardPosition(ctx: Context) {
     const user = await UserModel.findById(ctx.params.id)
@@ -54,6 +37,23 @@ export default class {
       ordersCount: user.orders.length,
       absoluteNumberOfUsersAbove: userPosition,
       relativeNumberOfUsersAbove: Math.ceil(userPosition / userCount),
+    }
+  }
+
+  @Get('/leaderboard')
+  leadeboard(ctx: Context) {
+    if (ctx.query.sortBy === 'subscribers') {
+      if (ctx.query.descending === 'false') {
+        ctx.body = leaderboardSubscribersDown.slice(0, 10)
+      } else {
+        ctx.body = leaderboardSubscribersUp.slice(0, 10)
+      }
+    } else {
+      if (ctx.query.descending === 'false') {
+        ctx.body = leaderboardBalanceDown.slice(0, 10)
+      } else {
+        ctx.body = leaderboardBalanceUp.slice(0, 10)
+      }
     }
   }
 
