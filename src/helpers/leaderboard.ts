@@ -13,22 +13,18 @@ async function updateLeaderboard() {
       'orders.0': { $exists: true },
     }).populate('orders')).map(u => u.strippedAndFilled())
 
-    leaderboardBalanceUp = users
-      .sort((a: User, b: User) =>
-        a.overallBalance > b.overallBalance ? -1 : 1
-      )
-      .slice(0, 10)
-    leaderboardBalanceDown = users
-      .sort((a: User, b: User) =>
-        a.overallBalance < b.overallBalance ? -1 : 1
-      )
-      .slice(0, 10)
-    leaderboardSubscribersUp = users
-      .sort((a: any, b: any) => (a.subCount > b.subCount ? -1 : 1))
-      .slice(0, 10)
-    leaderboardSubscribersDown = users
-      .sort((a: any, b: any) => (a.subCount < b.subCount ? -1 : 1))
-      .slice(0, 10)
+    leaderboardBalanceUp = users.sort((a: User, b: User) =>
+      a.overallBalance > b.overallBalance ? -1 : 1
+    )
+    leaderboardBalanceDown = users.sort((a: User, b: User) =>
+      a.overallBalance < b.overallBalance ? -1 : 1
+    )
+    leaderboardSubscribersUp = users.sort((a: any, b: any) =>
+      a.subCount > b.subCount ? -1 : 1
+    )
+    leaderboardSubscribersDown = users.sort((a: any, b: any) =>
+      a.subCount < b.subCount ? -1 : 1
+    )
   } catch (err) {
     report(err)
   }

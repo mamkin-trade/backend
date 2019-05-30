@@ -78,6 +78,16 @@ Returns list of 10 [Users](#user) with either the highest balance or what is spe
 | sortBy     | string  | Optional | Can be 'balance' or 'subscribers' |
 | descending | boolean | Optional | How to sort response              |
 
+### [Public] GET `/leaderboard/position/:id`
+
+Returns user's relative and absolute position in leaderboard
+
+#### Parameters
+
+| field | type   | Required | description    |
+| ----- | ------ | -------- | -------------- |
+| id    | string | Yes      | ID of the user |
+
 ### [Public] GET `/:id`
 
 Returns [User](#user)

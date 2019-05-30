@@ -19,16 +19,41 @@ export default class {
   leadeboard(ctx: Context) {
     if (ctx.query.sortBy === 'subscribers') {
       if (ctx.query.descending === 'false') {
-        ctx.body = leaderboardSubscribersDown
+        ctx.body = leaderboardSubscribersDown.slice(0, 10)
       } else {
-        ctx.body = leaderboardSubscribersUp
+        ctx.body = leaderboardSubscribersUp.slice(0, 10)
       }
     } else {
       if (ctx.query.descending === 'false') {
-        ctx.body = leaderboardBalanceDown
+        ctx.body = leaderboardBalanceDown.slice(0, 10)
       } else {
-        ctx.body = leaderboardBalanceUp
+        ctx.body = leaderboardBalanceUp.slice(0, 10)
       }
+    }
+  }
+
+  @Get('/leaderboard/position/:id')
+  async leadeboardPosition(ctx: Context) {
+    const user = await UserModel.findById(ctx.params.id)
+    if (!user) {
+      return ctx.throw(404, JSON.stringify(errors.noUser))
+    }
+    // If no orders, then return it
+    if (!user.orders.length) {
+      ctx.body = { ordersCount: 0 }
+      return
+    }
+    const userCount = leaderboardBalanceDown.length
+    const userPosition = leaderboardBalanceDown.findIndex(
+      u => u._id === user._id
+    )
+    if (userPosition < 0) {
+      ctx.throw(500)
+    }
+    ctx.body = {
+      ordersCount: user.orders.length,
+      absoluteNumberOfUsersAbove: userPosition,
+      relativeNumberOfUsersAbove: Math.ceil(userPosition / userCount),
     }
   }
 
@@ -58,9 +83,7 @@ export default class {
 
   @Get('/:id')
   async user(ctx: Context) {
-    const user = await UserModel.findOne({ _id: ctx.params.id }).populate(
-      'orders'
-    )
+    const user = await UserModel.findById(ctx.params.id).populate('orders')
     if (!user) {
       return ctx.throw(404, JSON.stringify(errors.noUser))
     }
