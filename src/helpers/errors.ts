@@ -59,4 +59,9 @@ export const errors = {
     en: 'Price cannot be lower than ticker price',
     ru: 'Цена не может быть ниже цены тикера',
   },
+  nasdaqClosed: {
+    en: 'Sorry, NASDAQ is closed at the moment, try again when trading opens',
+    ru:
+      'Простите, но NASDAQ сейчас закрыт, попробуйте снова после открытия торгов',
+  },
 }

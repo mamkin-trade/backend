@@ -14,6 +14,7 @@ import { minimumOrderSize, maximumOrderSize } from '../helpers/orderSize'
 import { notify } from '../helpers/subscribe'
 import { isCrypto } from '../helpers/isCrypto'
 import { fee as feePercent } from '../helpers/fee'
+import { checkNasdaqTime } from 'src/helpers/checkNasdaqTime'
 
 @Controller('/orders')
 export default class {
@@ -87,6 +88,11 @@ export default class {
     let price = new Big(ctx.request.body.price || 0)
     const isMarket = type === 'market'
     const isBuy = side === OrderSide.buy
+    if (isMarket && !crypto) {
+      if (!checkNasdaqTime()) {
+        return ctx.throw(403, JSON.stringify(errors.nasdaqClosed))
+      }
+    }
     // Get current price
     const uppercaseSymbol = symbol.toUpperCase()
     const currentPrice = isBuy
