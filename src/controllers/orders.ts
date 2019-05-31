@@ -14,7 +14,7 @@ import { minimumOrderSize, maximumOrderSize } from '../helpers/orderSize'
 import { notify } from '../helpers/subscribe'
 import { isCrypto } from '../helpers/isCrypto'
 import { fee as feePercent } from '../helpers/fee'
-import { checkNasdaqTime } from 'src/helpers/checkNasdaqTime'
+import { checkNasdaqTime } from '../helpers/checkNasdaqTime'
 
 @Controller('/orders')
 export default class {
