@@ -42,8 +42,16 @@ export let nasdaq: { [index: string]: NasdaqTicker } = {}
 
 async function updateSymbolDetails() {
   try {
+    console.log('Updating NASDAQ')
+    const startTime = new Date()
     const symbols = await getSymbols()
     await fillSymbols(symbols)
+    const endTime = new Date()
+    console.log(
+      `NASDAQ updated in ${(endTime.getTime() - startTime.getTime()) /
+        1000 /
+        60} minutes`
+    )
   } catch (err) {
     await report(err)
   }
@@ -62,7 +70,7 @@ let fetchingSymbolDetails = false
     } finally {
       fetchingSymbolDetails = false
     }
-  }, 30 * 60 * 1000)
+  }, 10 * 60 * 1000)
 })()
 
 function getSymbols(): Promise<string[]> {
