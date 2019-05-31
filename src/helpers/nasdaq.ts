@@ -50,7 +50,7 @@ async function updateSymbolDetails() {
     console.log(
       `NASDAQ updated in ${(endTime.getTime() - startTime.getTime()) /
         1000 /
-        60} minutes`
+        60} minutes, got ${Object.keys(nasdaq)} symbols`
     )
   } catch (err) {
     await report(err)
