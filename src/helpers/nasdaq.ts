@@ -44,7 +44,7 @@ async function updateSymbolDetails() {
   try {
     console.log('Updating NASDAQ')
     const startTime = new Date()
-    const symbols = ['DIS'].concat(await getSymbols()).sort()
+    const symbols = ['DIS', 'SNAP', 'T'].concat(await getSymbols()).sort()
     await fillSymbols(symbols)
     const endTime = new Date()
     console.log(
