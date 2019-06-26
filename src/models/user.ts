@@ -78,13 +78,15 @@ export class User extends Typegoose {
           ordersBalance += activeOrder.heldAmount
         } else {
           const conversionRate = tickers[`${second.toUpperCase()}USD`]
-          ordersBalance += activeOrder.heldAmount * conversionRate.bid
+          if (conversionRate && conversionRate.bid) {
+            ordersBalance += activeOrder.heldAmount * conversionRate.bid
+          }
         }
       } else {
         if (isCrypto(activeOrder.symbol)) {
           const value = activeOrder.heldAmount
           const simpleRate = tickers[`${first.toUpperCase()}USD`]
-          if (simpleRate) {
+          if (simpleRate && simpleRate.bid) {
             ordersBalance += value * simpleRate.bid
           } else {
             const firstConversionRate = tickers[`${first.toUpperCase()}BTC`]
@@ -124,7 +126,7 @@ export class User extends Typegoose {
         continue
       }
       const simpleRate = tickers[`${key.toUpperCase()}USD`]
-      if (simpleRate) {
+      if (simpleRate && simpleRate.bid) {
         balance += value * simpleRate.bid
       } else {
         const firstConversionRate = tickers[`${key.toUpperCase()}BTC`]
