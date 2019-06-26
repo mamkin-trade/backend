@@ -63,7 +63,7 @@ export class User extends Typegoose {
     this._doc.overallBalance = this.overallBalance
     let ordersBalance = 0
     for (const activeOrder of this.orders.filter(
-      (o: Order) => !o.completed && !o.cancelled
+      (o: Order) => !o.completed && !o.cancelled,
     ) as Order[]) {
       // Destruct symbols
       const first = isCrypto(activeOrder.symbol)
@@ -89,7 +89,12 @@ export class User extends Typegoose {
           } else {
             const firstConversionRate = tickers[`${first.toUpperCase()}BTC`]
             const secondConversionRate = tickers['BTCUSD']
-            if (!firstConversionRate || !secondConversionRate) {
+            if (
+              !firstConversionRate ||
+              !secondConversionRate ||
+              !firstConversionRate.bid ||
+              !secondConversionRate.bid
+            ) {
               continue
             }
             ordersBalance +=
@@ -124,7 +129,12 @@ export class User extends Typegoose {
       } else {
         const firstConversionRate = tickers[`${key.toUpperCase()}BTC`]
         const secondConversionRate = tickers['BTCUSD']
-        if (!firstConversionRate || !secondConversionRate) {
+        if (
+          !firstConversionRate ||
+          !secondConversionRate ||
+          !firstConversionRate.bid ||
+          !secondConversionRate.bid
+        ) {
           // Try stocks
           const nasdaqTicker = nasdaq[key.toUpperCase()]
           if (nasdaqTicker) {
@@ -162,7 +172,7 @@ export async function getOrCreateUser(loginOptions: LoginOptions) {
   // Try email
   if (loginOptions.email) {
     user = await UserModel.findOne({ email: loginOptions.email }).populate(
-      'orders'
+      'orders',
     )
   }
   // Try facebook id
