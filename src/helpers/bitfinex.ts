@@ -30,28 +30,36 @@ export interface Ticker {
 }
 
 async function updateSymbolDetails() {
-  const symbolDetailsResponse = await axios.get(
-    'https://api.bitfinex.com/v1/symbols_details'
-  )
-  const symbolDetails = symbolDetailsResponse.data.map(v =>
-    camelcaseKeysDeep(v)
-  ) as Symbol[]
-  for (const symbolDetail of symbolDetails) {
-    const skipCurrencies = ['eur', 'gbp', 'jpy', 'usdt']
-    let skip = false
-    for (const skipCurrency of skipCurrencies) {
-      if (symbolDetail.pair.toLowerCase().indexOf(skipCurrency) > -1) {
-        skip = true
+  try {
+    const symbolDetailsResponse = await axios.get(
+      'https://api.bitfinex.com/v1/symbols_details',
+    )
+    const symbolDetails = symbolDetailsResponse.data.map(v =>
+      camelcaseKeysDeep(v),
+    ) as Symbol[]
+    for (const symbolDetail of symbolDetails) {
+      const skipCurrencies = ['eur', 'gbp', 'jpy', 'usdt']
+      let skip = false
+      for (const skipCurrency of skipCurrencies) {
+        if (symbolDetail.pair.toLowerCase().indexOf(skipCurrency) > -1) {
+          skip = true
+        }
       }
+      if (skip) {
+        continue
+      }
+      symbolDetail.pair = symbolDetail.pair.toUpperCase()
+      tickers[symbolDetail.pair] = Object.assign(
+        tickers[symbolDetail.pair] || {},
+        symbolDetail,
+      ) as Symbol & Ticker
     }
-    if (skip) {
-      continue
+  } catch (err) {
+    if (err.response && err.response.status === 408) {
+      console.error(err)
+      return
     }
-    symbolDetail.pair = symbolDetail.pair.toUpperCase()
-    tickers[symbolDetail.pair] = Object.assign(
-      tickers[symbolDetail.pair] || {},
-      symbolDetail
-    ) as Symbol & Ticker
+    throw err
   }
 }
 
