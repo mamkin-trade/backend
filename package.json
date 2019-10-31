@@ -30,7 +30,7 @@
     "@types/md5": "^2.1.33",
     "@types/mongoose": "^5.3.26",
     "@types/node": "^11.13.4",
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "big.js": "^5.2.2",
     "bitfinex-api-node": "^2.0.5",
     "camelcase-keys-deep": "^0.1.0",
