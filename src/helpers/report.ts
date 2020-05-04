@@ -14,7 +14,15 @@ export async function tryReport<T>(fun: (() => T) | Promise<T>) {
 }
 
 export async function report(err: Error) {
-  const dismissableErrors = ['unexpected server response (429)', 'ECONNRESET', '0 undefined', '1 undefined', '2 undefined', '3 undefined']
+  const dismissableErrors = [
+    'unexpected server response (429)',
+    'ECONNRESET',
+    '0 undefined',
+    '1 undefined',
+    '2 undefined',
+    '3 undefined',
+    'Authentication failed',
+  ]
   try {
     let text = `MT Error:\n${err.message || JSON.stringify(err)}`
     if (err.stack) {
